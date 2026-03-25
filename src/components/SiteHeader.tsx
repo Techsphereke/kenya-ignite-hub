@@ -45,7 +45,7 @@ const SiteHeader = () => {
       <div className="container flex items-center justify-between py-3 md:py-4">
         <Link to="/" className="flex items-center gap-2 group">
           <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
-            <img src={logoImage} alt="Kenya Ignite" className="h-12 md:h-14 w-auto" />
+            <img src={logoImage} alt="Kenya Ignite" className="h-16 md:h-20 w-auto" />
           </motion.div>
         </Link>
 
