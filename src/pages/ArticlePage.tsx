@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
@@ -156,6 +157,21 @@ const ArticlePage = () => {
 
   return (
     <div className="min-h-screen bg-background animated-bg noise-overlay">
+      <Helmet>
+        <title>{`${article.title} — Kenya Ignite`}</title>
+        <meta name="description" content={article.excerpt || 'Read more on Kenya Ignite'} />
+        <link rel="canonical" href={shareUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={article.excerpt || 'Read more on Kenya Ignite'} />
+        <meta property="og:image" content={article.cover_image || 'https://kenyaignite.co.ke/og-image.png'} />
+        <meta property="og:url" content={shareUrl} />
+        <meta property="og:site_name" content="Kenya Ignite" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={article.excerpt || 'Read more on Kenya Ignite'} />
+        <meta name="twitter:image" content={article.cover_image || 'https://kenyaignite.co.ke/og-image.png'} />
+      </Helmet>
       <SiteHeader />
 
       <article className="container max-w-3xl py-6 md:py-10 relative z-10">
