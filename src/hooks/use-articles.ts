@@ -53,7 +53,8 @@ async function enrichArticles(articles: any[]): Promise<DbArticle[]> {
   ]);
 
   const profiles = new Map((profilesRes.data || []).map(p => [p.user_id, p]));
-  const cats = new Map(((categoriesRes as any).data || []).map((c: any) => [c.id, c]));
+  const catsData = ((categoriesRes as any).data || []) as DbCategory[];
+  const cats = new Map(catsData.map(c => [c.id, c]));
 
   return articles.map(a => ({
     ...a,
