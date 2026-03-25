@@ -44,7 +44,20 @@ const SiteHeader = () => {
       {/* Main header */}
       <div className="container flex items-center justify-between py-3 md:py-4">
         <Link to="/" className="flex items-center gap-2 group">
-          <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
+          <motion.div
+            animate={{
+              filter: [
+                'drop-shadow(0 0 6px rgba(255,80,0,0.6))',
+                'drop-shadow(0 0 14px rgba(255,120,0,0.8))',
+                'drop-shadow(0 0 8px rgba(255,50,0,0.5))',
+                'drop-shadow(0 0 18px rgba(255,100,0,0.9))',
+                'drop-shadow(0 0 6px rgba(255,80,0,0.6))',
+              ],
+              scale: [1, 1.02, 1, 1.01, 1],
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.08 }}
+          >
             <img src={logoImage} alt="Kenya Ignite" className="h-16 md:h-20 w-auto" />
           </motion.div>
         </Link>
