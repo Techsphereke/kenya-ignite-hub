@@ -187,6 +187,54 @@ const ArticlePage = () => {
           </a>
         </div>
 
+        {/* Audio Reader */}
+        {tts.supported && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }}
+            className="mt-4 glass-card rounded-xl p-4 glow-border">
+            <div className="flex items-center gap-3">
+              <Volume2 className="w-5 h-5 text-primary flex-shrink-0" />
+              <span className="text-sm font-body font-semibold text-foreground">Listen to this article</span>
+              <div className="flex items-center gap-1.5 ml-auto">
+                {!tts.isPlaying ? (
+                  <button onClick={tts.play}
+                    className="p-2 rounded-lg bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300"
+                    aria-label="Play article">
+                    <Play className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <>
+                    <button onClick={tts.isPaused ? tts.resume : tts.pause}
+                      className="p-2 rounded-lg bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300"
+                      aria-label={tts.isPaused ? 'Resume' : 'Pause'}>
+                      {tts.isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+                    </button>
+                    <button onClick={tts.stop}
+                      className="p-2 rounded-lg bg-muted/50 text-muted-foreground hover:bg-destructive hover:text-destructive-foreground transition-all duration-300"
+                      aria-label="Stop">
+                      <Square className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+            {tts.isPlaying && (
+              <div className="mt-3">
+                <div className="w-full h-1.5 bg-muted/50 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-primary rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${tts.progress}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground font-body mt-1.5">
+                  {tts.isPaused ? 'Paused' : 'Playing...'} · {tts.progress}%
+                </p>
+              </div>
+            )}
+          </motion.div>
+        )}
+
         {/* Content */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}
           className="prose prose-lg max-w-none mt-6 font-body text-foreground/90 leading-relaxed
