@@ -1,13 +1,72 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
 import { useArticleBySlug, useArticleComments, useLatestArticles, formatDate, DbComment } from '@/hooks/use-articles';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye } from 'lucide-react';
+import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Volume2, Pause, Play, Square, SkipForward, SkipBack } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+
+function stripHtml(html: string): string {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  return div.textContent || div.innerText || '';
+}
+
+function useTextToSpeech(text: string) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [supported, setSupported] = useState(true);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const intervalRef = useRef<number | null>(null);
+  const totalCharsRef = useRef(0);
+
+  useEffect(() => {
+    setSupported('speechSynthesis' in window);
+    return () => { window.speechSynthesis?.cancel(); clearInterval(intervalRef.current!); };
+  }, []);
+
+  const play = useCallback(() => {
+    if (!text || !supported) return;
+    window.speechSynthesis.cancel();
+    const plainText = stripHtml(text);
+    totalCharsRef.current = plainText.length;
+    const utt = new SpeechSynthesisUtterance(plainText);
+    utt.rate = 1;
+    utt.pitch = 1;
+    utt.onboundary = (e) => {
+      if (e.charIndex && totalCharsRef.current) setProgress(Math.round((e.charIndex / totalCharsRef.current) * 100));
+    };
+    utt.onend = () => { setIsPlaying(false); setIsPaused(false); setProgress(100); clearInterval(intervalRef.current!); };
+    utt.onerror = () => { setIsPlaying(false); setIsPaused(false); setProgress(0); };
+    utteranceRef.current = utt;
+    window.speechSynthesis.speak(utt);
+    setIsPlaying(true);
+    setIsPaused(false);
+  }, [text, supported]);
+
+  const pause = useCallback(() => {
+    window.speechSynthesis.pause();
+    setIsPaused(true);
+  }, []);
+
+  const resume = useCallback(() => {
+    window.speechSynthesis.resume();
+    setIsPaused(false);
+  }, []);
+
+  const stop = useCallback(() => {
+    window.speechSynthesis.cancel();
+    setIsPlaying(false);
+    setIsPaused(false);
+    setProgress(0);
+  }, []);
+
+  return { isPlaying, isPaused, progress, supported, play, pause, resume, stop };
+}
 
 const CommentItem = ({ comment, replies }: { comment: DbComment; replies: DbComment[] }) => (
   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="py-4 border-b border-border/30 last:border-0">
