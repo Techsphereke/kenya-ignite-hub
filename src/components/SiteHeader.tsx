@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, Flame } from 'lucide-react';
+import { Search, Menu, X, Flame, User } from 'lucide-react';
 import { categories } from '@/data/demo-data';
+import { useAuth } from '@/contexts/AuthContext';
 
 const SiteHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +49,9 @@ const SiteHeader = () => {
           <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 rounded-md hover:bg-muted transition-colors" aria-label="Search">
             <Search className="w-5 h-5 text-foreground" />
           </button>
+          <Link to={user ? '/dashboard' : '/auth'} className="p-2 rounded-md hover:bg-muted transition-colors" aria-label={user ? 'Dashboard' : 'Sign in'}>
+            <User className="w-5 h-5 text-foreground" />
+          </Link>
           <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 rounded-md hover:bg-muted transition-colors md:hidden" aria-label="Menu">
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
