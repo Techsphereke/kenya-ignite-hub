@@ -5,7 +5,7 @@ import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
 import { useArticleBySlug, useArticleComments, useLatestArticles, formatDate, DbComment } from '@/hooks/use-articles';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Volume2, Pause, Play, Square, ChevronDown } from 'lucide-react';
+import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Volume2, Pause, Play, Square, ChevronDown, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
