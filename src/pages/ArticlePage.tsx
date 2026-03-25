@@ -119,9 +119,11 @@ const ArticlePage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background animated-bg noise-overlay">
-        <SiteHeader />
+  const tts = useTextToSpeech(article?.content || '');
+
+  return (
+    <div className="min-h-screen bg-background animated-bg noise-overlay">
+      <SiteHeader />
         <div className="container py-20 text-center font-body text-muted-foreground">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
