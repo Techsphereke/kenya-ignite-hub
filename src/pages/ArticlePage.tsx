@@ -1,15 +1,18 @@
 import { useParams, Link } from 'react-router-dom';
+import { useState } from 'react';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
-import { getArticleBySlug, getAuthor, getCategory, getArticleComments, formatDate, getLatestArticles, Comment as CommentType } from '@/data/demo-data';
+import { useArticleBySlug, useArticleComments, useLatestArticles, formatDate, DbComment } from '@/hooks/use-articles';
+import { supabase } from '@/integrations/supabase/client';
 import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye } from 'lucide-react';
+import { toast } from 'sonner';
 
-const CommentItem = ({ comment, replies }: { comment: CommentType; replies: CommentType[] }) => (
+const CommentItem = ({ comment, replies }: { comment: DbComment; replies: DbComment[] }) => (
   <div className="py-4 border-b border-border last:border-0">
     <div className="flex items-center gap-2 mb-1">
-      <span className="text-sm font-body font-semibold text-foreground">{comment.authorName}</span>
-      <span className="text-xs text-muted-foreground font-body">{formatDate(comment.createdAt)}</span>
+      <span className="text-sm font-body font-semibold text-foreground">{comment.author_name}</span>
+      <span className="text-xs text-muted-foreground font-body">{formatDate(comment.created_at)}</span>
     </div>
     <p className="text-sm font-body text-foreground/80 leading-relaxed">{comment.content}</p>
     {replies.length > 0 && (
@@ -22,7 +25,45 @@ const CommentItem = ({ comment, replies }: { comment: CommentType; replies: Comm
 
 const ArticlePage = () => {
   const { slug } = useParams();
-  const article = getArticleBySlug(slug || '');
+  const { data: article, isLoading } = useArticleBySlug(slug || '');
+  const { data: comments, refetch: refetchComments } = useArticleComments(article?.id);
+  const { data: allLatest } = useLatestArticles(10);
+  const [commentName, setCommentName] = useState('');
+  const [commentText, setCommentText] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const related = (allLatest || []).filter(a => a.id !== article?.id && a.category_id === article?.category_id).slice(0, 3);
+  const topLevel = (comments || []).filter(c => !c.parent_id);
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+  const handleComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentName.trim() || !commentText.trim() || !article) return;
+    setSubmitting(true);
+    const { error } = await supabase.from('comments').insert({
+      article_id: article.id,
+      author_name: commentName.trim(),
+      content: commentText.trim(),
+    });
+    if (error) toast.error('Failed to post comment');
+    else {
+      toast.success('Comment posted!');
+      setCommentName('');
+      setCommentText('');
+      refetchComments();
+    }
+    setSubmitting(false);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <div className="container py-20 text-center font-body text-muted-foreground">Loading...</div>
+        <SiteFooter />
+      </div>
+    );
+  }
 
   if (!article) {
     return (
@@ -37,13 +78,6 @@ const ArticlePage = () => {
     );
   }
 
-  const author = getAuthor(article.authorId);
-  const category = getCategory(article.categoryId);
-  const allComments = getArticleComments(article.id);
-  const topLevel = allComments.filter(c => !c.parentId);
-  const related = getLatestArticles().filter(a => a.id !== article.id && a.categoryId === article.categoryId).slice(0, 3);
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
-
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -53,25 +87,22 @@ const ArticlePage = () => {
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
 
-        {category && <span className="text-xs font-body font-bold text-primary uppercase tracking-wider">{category.name}</span>}
+        {article.category_name && <span className="text-xs font-body font-bold text-primary uppercase tracking-wider">{article.category_name}</span>}
         <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground leading-tight mt-1">{article.title}</h1>
 
         <div className="flex flex-wrap items-center gap-3 mt-4 text-sm text-muted-foreground font-body">
-          {author && (
-            <div className="flex items-center gap-2">
-              <img src={author.avatar} alt={author.name} className="w-8 h-8 rounded-full object-cover" />
-              <span className="font-medium text-foreground">{author.name}</span>
-            </div>
-          )}
+          <span className="font-medium text-foreground">{article.author_name}</span>
           <span>·</span>
-          <span>{formatDate(article.publishedAt)}</span>
+          <span>{formatDate(article.published_at)}</span>
           <span>·</span>
-          <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{article.readingTime} min read</span>
+          <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{article.reading_time} min read</span>
           <span>·</span>
           <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" />{article.views.toLocaleString()} views</span>
         </div>
 
-        <img src={article.coverImage} alt={article.title} className="w-full rounded-lg mt-6 object-cover max-h-[450px]" />
+        {article.cover_image && (
+          <img src={article.cover_image} alt={article.title} className="w-full rounded-lg mt-6 object-cover max-h-[450px]" />
+        )}
 
         {/* Share buttons */}
         <div className="flex items-center gap-3 mt-6 pb-4 border-b border-border">
@@ -94,24 +125,41 @@ const ArticlePage = () => {
         />
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-2 mt-8">
-          {article.tags.map(tag => (
-            <Link key={tag} to={`/search?q=${encodeURIComponent(tag)}`}
-              className="px-3 py-1 rounded-full bg-muted text-xs font-body font-medium text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
-              #{tag}
-            </Link>
-          ))}
-        </div>
+        {article.tags && article.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-8">
+            {article.tags.map(tag => (
+              <Link key={tag} to={`/search?q=${encodeURIComponent(tag)}`}
+                className="px-3 py-1 rounded-full bg-muted text-xs font-body font-medium text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
+                #{tag}
+              </Link>
+            ))}
+          </div>
+        )}
 
         {/* Comments */}
         <section className="mt-10">
           <h2 className="text-lg font-display font-bold text-foreground flex items-center gap-2">
             <MessageCircle className="w-5 h-5 text-primary" />
-            Comments ({allComments.length})
+            Comments ({(comments || []).length})
           </h2>
+
+          {/* Add comment form */}
+          <form onSubmit={handleComment} className="mt-4 space-y-3 p-4 bg-card rounded-lg border border-border">
+            <input type="text" placeholder="Your name" value={commentName} onChange={e => setCommentName(e.target.value)}
+              required maxLength={100}
+              className="w-full px-3 py-2 rounded-md bg-background border border-border text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+            <textarea placeholder="Write a comment..." value={commentText} onChange={e => setCommentText(e.target.value)}
+              required rows={3} maxLength={1000}
+              className="w-full px-3 py-2 rounded-md bg-background border border-border text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
+            <button type="submit" disabled={submitting}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-md font-body text-sm font-medium hover:opacity-90 disabled:opacity-50">
+              {submitting ? 'Posting...' : 'Post Comment'}
+            </button>
+          </form>
+
           <div className="mt-4">
             {topLevel.map(c => (
-              <CommentItem key={c.id} comment={c} replies={allComments.filter(r => r.parentId === c.id)} />
+              <CommentItem key={c.id} comment={c} replies={(comments || []).filter(r => r.parent_id === c.id)} />
             ))}
           </div>
         </section>

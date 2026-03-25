@@ -2,7 +2,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
-import { searchArticles, categories } from '@/data/demo-data';
+import { useSearchArticles, useCategories } from '@/hooks/use-articles';
 import { Search as SearchIcon, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 
@@ -10,7 +10,8 @@ const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
   const [query, setQuery] = useState(initialQuery);
-  const results = searchArticles(initialQuery);
+  const { data: results, isLoading } = useSearchArticles(initialQuery);
+  const { data: categories } = useCategories();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +41,7 @@ const SearchPage = () => {
 
         {/* Category pills */}
         <div className="flex flex-wrap gap-2 mb-8">
-          {categories.map(cat => (
+          {(categories || []).map(cat => (
             <button key={cat.id} onClick={() => { setQuery(cat.name); setSearchParams({ q: cat.name }); }}
               className="px-4 py-1.5 rounded-full bg-muted text-sm font-body font-medium text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
               {cat.name}
@@ -48,17 +49,17 @@ const SearchPage = () => {
           ))}
         </div>
 
-        {initialQuery && (
+        {initialQuery && !isLoading && (
           <p className="text-sm text-muted-foreground font-body mb-6">
-            {results.length} result{results.length !== 1 ? 's' : ''} for "<span className="font-semibold text-foreground">{initialQuery}</span>"
+            {(results || []).length} result{(results || []).length !== 1 ? 's' : ''} for "<span className="font-semibold text-foreground">{initialQuery}</span>"
           </p>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {results.map(a => <ArticleCard key={a.id} article={a} />)}
+          {(results || []).map(a => <ArticleCard key={a.id} article={a} />)}
         </div>
 
-        {initialQuery && results.length === 0 && (
+        {initialQuery && !isLoading && (results || []).length === 0 && (
           <div className="text-center py-16">
             <p className="text-lg font-display text-muted-foreground">No articles found</p>
             <p className="text-sm font-body text-muted-foreground mt-1">Try different keywords or browse categories above</p>
