@@ -50,6 +50,7 @@ const App = () => (
                 <Route path="/admin/comments" element={<AdminComments />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <MobileBottomNav />
             </Suspense>
           </BrowserRouter>
         </AuthProvider>
