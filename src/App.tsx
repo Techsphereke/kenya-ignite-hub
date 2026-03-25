@@ -10,6 +10,10 @@ import SearchPage from "./pages/SearchPage.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import AuthPage from "./pages/AuthPage.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import AdminOverview from "./pages/admin/AdminOverview.tsx";
+import AdminArticles from "./pages/admin/AdminArticles.tsx";
+import AdminUsers from "./pages/admin/AdminUsers.tsx";
+import AdminComments from "./pages/admin/AdminComments.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +32,10 @@ const App = () => (
             <Route path="/category/:slug" element={<CategoryPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin" element={<AdminOverview />} />
+            <Route path="/admin/articles" element={<AdminArticles />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/comments" element={<AdminComments />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
