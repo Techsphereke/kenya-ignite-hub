@@ -44,14 +44,9 @@ const SiteHeader = () => {
       {/* Main header */}
       <div className="container flex items-center justify-between py-3 md:py-4">
         <Link to="/" className="flex items-center gap-2 group">
-          <motion.div whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }} transition={{ duration: 0.5 }}>
-            <Flame className="w-7 h-7 md:w-8 md:h-8 text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
+          <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
+            <img src={logoImage} alt="Kenya Ignite" className="h-8 md:h-10 w-auto" />
           </motion.div>
-          <div>
-            <h1 className="text-xl md:text-2xl font-display font-bold tracking-tight leading-none">
-              Kenya <span className="gradient-text">Ignite</span>
-            </h1>
-          </div>
         </Link>
 
         <div className="flex items-center gap-1">
