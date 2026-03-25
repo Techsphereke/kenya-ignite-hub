@@ -106,6 +106,7 @@ const ArticlePage = () => {
 
   const related = (allLatest || []).filter(a => a.id !== article?.id && a.category_id === article?.category_id).slice(0, 3);
   const topLevel = (comments || []).filter(c => !c.parent_id);
+  const ogShareUrl = article ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/og-article?slug=${article.slug}` : '';
   const shareUrl = article ? `https://kenyaignite.co.ke/article/${article.slug}` : '';
 
   const handleComment = async (e: React.FormEvent) => {
