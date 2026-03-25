@@ -10,7 +10,7 @@ const MobileBottomNav = () => {
   const navItems = [
     { to: '/', icon: Home, label: 'Home' },
     { to: '/search', icon: Search, label: 'Search' },
-    { to: '/categories', icon: Grid3X3, label: 'Explore' },
+    { to: '/search?explore=1', icon: Grid3X3, label: 'Explore' },
     { to: user ? '/dashboard' : '/auth', icon: User, label: user ? 'Profile' : 'Sign in' },
   ];
 
