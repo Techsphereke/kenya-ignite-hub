@@ -39,7 +39,7 @@ const Index = () => {
   const { data: categories } = useCategories();
 
   return (
-    <div className="min-h-screen bg-background animated-bg noise-overlay">
+    <div className="min-h-screen bg-background animated-bg noise-overlay pb-20 md:pb-0">
       <SiteHeader />
       <BreakingNewsTicker />
 

@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index.tsx";
+import MobileBottomNav from "./components/MobileBottomNav";
 
 const ArticlePage = lazy(() => import("./pages/ArticlePage.tsx"));
 const SearchPage = lazy(() => import("./pages/SearchPage.tsx"));
@@ -49,6 +50,7 @@ const App = () => (
                 <Route path="/admin/comments" element={<AdminComments />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <MobileBottomNav />
             </Suspense>
           </BrowserRouter>
         </AuthProvider>
