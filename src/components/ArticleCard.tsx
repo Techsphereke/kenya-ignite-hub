@@ -63,7 +63,7 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
             <p className="text-sm text-white/70 font-body mt-1.5 line-clamp-2 hidden md:block">{article.excerpt}</p>
             <div className="flex items-center gap-2 mt-2 text-xs text-white/50 font-body">
               <span>{article.author_name}</span>
-              <span className="text-primary/40">·</span>
+              <span className="text-white/30">·</span>
               <Clock className="w-3 h-3" />
               <span>{article.reading_time} min read</span>
             </div>

@@ -128,7 +128,7 @@ const ArticlePage = () => {
 
         {/* Content */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}
-          className="prose prose-lg prose-invert max-w-none mt-6 font-body text-foreground/90 leading-relaxed
+          className="prose prose-lg max-w-none mt-6 font-body text-foreground/90 leading-relaxed
           [&_h2]:font-display [&_h2]:text-foreground [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-3
           [&_p]:mb-4 [&_p]:text-base"
           dangerouslySetInnerHTML={{ __html: article.content }}
