@@ -162,9 +162,9 @@ const Dashboard = () => {
                   className="px-5 py-2.5 glass-card rounded-xl font-body text-sm font-medium text-foreground hover:bg-muted/50 transition-all duration-300">
                   Save Draft
                 </button>
-                <button onClick={() => handleSave('pending')}
+                <button onClick={() => handleSave('approved')}
                   className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-body text-sm font-medium hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300 flex items-center gap-1.5">
-                  <Send className="w-4 h-4" /> Submit for Review
+                  <Send className="w-4 h-4" /> Publish
                 </button>
               </div>
             </div>
