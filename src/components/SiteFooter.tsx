@@ -6,7 +6,7 @@ const SiteFooter = () => {
   const { data: categories } = useCategories();
 
   return (
-    <footer className="relative mt-16 border-t border-border/30">
+    <footer className="relative mt-16 border-t border-border/30 hidden md:block">
       {/* Gradient top edge */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
