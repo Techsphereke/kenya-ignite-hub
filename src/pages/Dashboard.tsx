@@ -68,7 +68,7 @@ const Dashboard = () => {
       error = res.error;
     }
     if (error) { toast.error(error.message); }
-    else { toast.success(status === 'pending' ? 'Submitted for review!' : 'Article saved!'); setView('list'); setEditingArticle(null); fetchArticles(); }
+    else { toast.success(status === 'approved' ? 'Article published!' : 'Article saved!'); setView('list'); setEditingArticle(null); fetchArticles(); }
   };
 
   const handleDelete = async (id: string) => {
