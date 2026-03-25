@@ -94,6 +94,7 @@ const ArticlePage = () => {
   const [commentName, setCommentName] = useState('');
   const [commentText, setCommentText] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const tts = useTextToSpeech(article?.content || '');
 
   const related = (allLatest || []).filter(a => a.id !== article?.id && a.category_id === article?.category_id).slice(0, 3);
   const topLevel = (comments || []).filter(c => !c.parent_id);
@@ -119,7 +120,6 @@ const ArticlePage = () => {
   };
 
   if (isLoading) {
-  const tts = useTextToSpeech(article?.content || '');
 
   return (
     <div className="min-h-screen bg-background animated-bg noise-overlay">
