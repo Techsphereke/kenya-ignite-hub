@@ -68,6 +68,13 @@ const SiteHeader = () => {
             }
             return <button key={idx} onClick={item.onClick} className={cls} aria-label={item.label}><Icon className="w-5 h-5" /></button>;
           })}
+          <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="p-2 rounded-lg transition-all duration-300 hover:bg-primary/10 hover:shadow-[0_0_15px_hsl(var(--primary)/0.2)] text-foreground/70 hover:text-foreground"
+            aria-label="Toggle theme">
+            <motion.div key={theme} initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} transition={{ duration: 0.3 }}>
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </motion.div>
+          </button>
           <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 rounded-lg hover:bg-primary/10 transition-all duration-300 md:hidden" aria-label="Menu">
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
