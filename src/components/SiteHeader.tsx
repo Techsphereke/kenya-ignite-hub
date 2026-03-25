@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, User, Shield } from 'lucide-react';
+import { Search, Menu, X, Flame, User, Shield } from 'lucide-react';
 import { useCategories } from '@/hooks/use-articles';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import logoImage from '@/assets/kenya-ignite-logo.png';
 
 const SiteHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -46,20 +45,31 @@ const SiteHeader = () => {
         <Link to="/" className="flex items-center gap-2 group">
           <motion.div
             animate={{
-              filter: [
-                'drop-shadow(0 0 6px rgba(255,80,0,0.6))',
-                'drop-shadow(0 0 14px rgba(255,120,0,0.8))',
-                'drop-shadow(0 0 8px rgba(255,50,0,0.5))',
-                'drop-shadow(0 0 18px rgba(255,100,0,0.9))',
-                'drop-shadow(0 0 6px rgba(255,80,0,0.6))',
-              ],
-              scale: [1, 1.02, 1, 1.01, 1],
+              rotate: [-2, 2, -1, 3, -2],
+              scale: [1, 1.08, 0.97, 1.05, 1],
+              y: [0, -2, 1, -3, 0],
             }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            whileHover={{ scale: 1.08 }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.15 }}
+            className="relative"
           >
-            <img src={logoImage} alt="Kenya Ignite" className="h-16 md:h-20 w-auto" />
+            <Flame className="w-9 h-9 md:w-11 md:h-11 text-[hsl(15,95%,50%)] drop-shadow-[0_0_12px_rgba(255,80,0,0.7)]" strokeWidth={2.2} />
+            <motion.div
+              animate={{
+                opacity: [0.4, 0.8, 0.3, 0.9, 0.4],
+                scale: [0.8, 1.1, 0.9, 1.05, 0.8],
+              }}
+              transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <Flame className="w-5 h-5 md:w-6 md:h-6 text-[hsl(40,100%,55%)] drop-shadow-[0_0_6px_rgba(255,200,0,0.6)]" strokeWidth={2} />
+            </motion.div>
           </motion.div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-display font-bold tracking-tight leading-none">
+              Kenya <span className="text-[hsl(20,90%,50%)]">Ignite</span>
+            </h1>
+          </div>
         </Link>
 
         <div className="flex items-center gap-1">
