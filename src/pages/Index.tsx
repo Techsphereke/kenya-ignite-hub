@@ -5,6 +5,7 @@ import ArticleCard from '@/components/ArticleCard';
 import { useFeaturedArticles, useLatestArticles, useTrendingArticles, useCategories, useArticlesByCategory } from '@/hooks/use-articles';
 import { TrendingUp, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const CategorySection = ({ categoryId, categoryName, categorySlug }: { categoryId: string; categoryName: string; categorySlug: string }) => {
   const { data: articles } = useArticlesByCategory(categoryId);
@@ -12,15 +13,16 @@ const CategorySection = ({ categoryId, categoryName, categorySlug }: { categoryI
 
   return (
     <section className="container mt-12">
-      <div className="flex items-center justify-between mb-5">
+      <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+        className="flex items-center justify-between mb-5">
         <h2 className="text-xl font-display font-bold text-foreground flex items-center gap-2">
-          <span className="w-1 h-6 bg-primary rounded-full" />
+          <span className="w-1 h-6 bg-gradient-to-b from-primary to-accent rounded-full" />
           {categoryName}
         </h2>
-        <Link to={`/category/${categorySlug}`} className="text-sm font-body font-medium text-primary hover:underline flex items-center gap-0.5">
+        <Link to={`/category/${categorySlug}`} className="text-sm font-body font-medium text-primary hover:text-accent transition-colors duration-300 flex items-center gap-0.5 animated-underline">
           View all <ChevronRight className="w-4 h-4" />
         </Link>
-      </div>
+      </motion.div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {articles.slice(0, 3).map(a => (
           <ArticleCard key={a.id} article={a} />
@@ -37,11 +39,11 @@ const Index = () => {
   const { data: categories } = useCategories();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background animated-bg noise-overlay">
       <SiteHeader />
       <BreakingNewsTicker />
 
-      <main>
+      <main className="relative z-10">
         {/* Featured Stories */}
         {featured && featured.length > 0 && (
           <section className="container mt-6 md:mt-8">
@@ -60,31 +62,35 @@ const Index = () => {
         <section className="container mt-10 md:mt-14">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <h2 className="text-xl font-display font-bold text-foreground mb-5 flex items-center gap-2">
-                <span className="w-1 h-6 bg-primary rounded-full" />
+              <motion.h2 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                className="text-xl font-display font-bold text-foreground mb-5 flex items-center gap-2">
+                <span className="w-1 h-6 bg-gradient-to-b from-primary to-accent rounded-full" />
                 Latest News
-              </h2>
+              </motion.h2>
               {latest && latest.length > 0 ? (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {latest.map(a => (
                     <ArticleCard key={a.id} article={a} variant="horizontal" />
                   ))}
                 </div>
               ) : (
-                <p className="text-muted-foreground font-body py-8 text-center">No published articles yet. Check back soon!</p>
+                <div className="glass-card rounded-xl p-12 text-center">
+                  <p className="text-muted-foreground font-body">No published articles yet. Check back soon!</p>
+                </div>
               )}
             </div>
 
             <aside>
-              <h2 className="text-xl font-display font-bold text-foreground mb-5 flex items-center gap-2">
+              <motion.h2 initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                className="text-xl font-display font-bold text-foreground mb-5 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-primary" />
                 Trending
-              </h2>
-              <div className="bg-card rounded-lg border border-border p-4">
+              </motion.h2>
+              <div className="glass-card rounded-xl p-4 shimmer">
                 {trending && trending.length > 0 ? (
                   trending.map((a, i) => (
-                    <div key={a.id} className="flex gap-3 py-3 border-b border-border last:border-0">
-                      <span className="text-2xl font-display font-bold text-muted-foreground/40">{String(i + 1).padStart(2, '0')}</span>
+                    <div key={a.id} className="flex gap-3 py-3 border-b border-border/30 last:border-0">
+                      <span className="text-2xl font-display font-bold gradient-text opacity-60">{String(i + 1).padStart(2, '0')}</span>
                       <ArticleCard article={a} variant="compact" />
                     </div>
                   ))
