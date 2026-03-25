@@ -54,16 +54,16 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
       <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
         <Link to={`/article/${article.slug}`} className="group relative block rounded-xl overflow-hidden glow-border">
           <img src={article.cover_image || '/placeholder.svg'} alt={article.title} className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-            {article.category_name && <span className="text-xs font-body font-semibold text-primary uppercase tracking-wider">{article.category_name}</span>}
-            <h2 className="text-lg md:text-2xl font-display font-bold text-foreground leading-tight mt-1 group-hover:text-primary transition-colors duration-300">
+            {article.category_name && <span className="text-xs font-body font-semibold text-primary-foreground/90 uppercase tracking-wider">{article.category_name}</span>}
+            <h2 className="text-lg md:text-2xl font-display font-bold text-white leading-tight mt-1 group-hover:text-primary-foreground transition-colors duration-300">
               {article.title}
             </h2>
-            <p className="text-sm text-foreground/60 font-body mt-1.5 line-clamp-2 hidden md:block">{article.excerpt}</p>
-            <div className="flex items-center gap-2 mt-2 text-xs text-foreground/40 font-body">
+            <p className="text-sm text-white/70 font-body mt-1.5 line-clamp-2 hidden md:block">{article.excerpt}</p>
+            <div className="flex items-center gap-2 mt-2 text-xs text-white/50 font-body">
               <span>{article.author_name}</span>
-              <span className="text-primary/40">·</span>
+              <span className="text-white/30">·</span>
               <Clock className="w-3 h-3" />
               <span>{article.reading_time} min read</span>
             </div>
