@@ -20,13 +20,30 @@ function useTextToSpeech(text: string) {
   const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0);
   const [supported, setSupported] = useState(true);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const intervalRef = useRef<number | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoiceIndex, setSelectedVoiceIndex] = useState<number>(0);
+  const [rate, setRate] = useState(1);
   const totalCharsRef = useRef(0);
 
   useEffect(() => {
-    setSupported('speechSynthesis' in window);
-    return () => { window.speechSynthesis?.cancel(); clearInterval(intervalRef.current!); };
+    if (!('speechSynthesis' in window)) { setSupported(false); return; }
+    const loadVoices = () => {
+      const v = window.speechSynthesis.getVoices().filter(voice => voice.lang.startsWith('en'));
+      if (v.length > 0) {
+        setVoices(v);
+        // Prefer a voice with "Kenya", "Africa", "Female", or "Google" in the name
+        const preferred = v.findIndex(voice =>
+          /kenya|swahili|africa/i.test(voice.name)
+        );
+        const googleFemale = v.findIndex(voice =>
+          /google.*female|female.*english/i.test(voice.name)
+        );
+        setSelectedVoiceIndex(preferred >= 0 ? preferred : googleFemale >= 0 ? googleFemale : 0);
+      }
+    };
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    return () => { window.speechSynthesis?.cancel(); };
   }, []);
 
   const play = useCallback(() => {
@@ -35,37 +52,24 @@ function useTextToSpeech(text: string) {
     const plainText = stripHtml(text);
     totalCharsRef.current = plainText.length;
     const utt = new SpeechSynthesisUtterance(plainText);
-    utt.rate = 1;
+    utt.rate = rate;
     utt.pitch = 1;
+    if (voices[selectedVoiceIndex]) utt.voice = voices[selectedVoiceIndex];
     utt.onboundary = (e) => {
       if (e.charIndex && totalCharsRef.current) setProgress(Math.round((e.charIndex / totalCharsRef.current) * 100));
     };
-    utt.onend = () => { setIsPlaying(false); setIsPaused(false); setProgress(100); clearInterval(intervalRef.current!); };
+    utt.onend = () => { setIsPlaying(false); setIsPaused(false); setProgress(100); };
     utt.onerror = () => { setIsPlaying(false); setIsPaused(false); setProgress(0); };
-    utteranceRef.current = utt;
     window.speechSynthesis.speak(utt);
     setIsPlaying(true);
     setIsPaused(false);
-  }, [text, supported]);
+  }, [text, supported, rate, voices, selectedVoiceIndex]);
 
-  const pause = useCallback(() => {
-    window.speechSynthesis.pause();
-    setIsPaused(true);
-  }, []);
+  const pause = useCallback(() => { window.speechSynthesis.pause(); setIsPaused(true); }, []);
+  const resume = useCallback(() => { window.speechSynthesis.resume(); setIsPaused(false); }, []);
+  const stop = useCallback(() => { window.speechSynthesis.cancel(); setIsPlaying(false); setIsPaused(false); setProgress(0); }, []);
 
-  const resume = useCallback(() => {
-    window.speechSynthesis.resume();
-    setIsPaused(false);
-  }, []);
-
-  const stop = useCallback(() => {
-    window.speechSynthesis.cancel();
-    setIsPlaying(false);
-    setIsPaused(false);
-    setProgress(0);
-  }, []);
-
-  return { isPlaying, isPaused, progress, supported, play, pause, resume, stop };
+  return { isPlaying, isPaused, progress, supported, voices, selectedVoiceIndex, setSelectedVoiceIndex, rate, setRate, play, pause, resume, stop };
 }
 
 const CommentItem = ({ comment, replies }: { comment: DbComment; replies: DbComment[] }) => (
