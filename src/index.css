@@ -86,9 +86,9 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(ellipse at 20% 50%, hsl(0 72% 50% / 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, hsl(35 90% 52% / 0.04) 0%, transparent 50%),
-                radial-gradient(ellipse at 40% 80%, hsl(145 50% 30% / 0.04) 0%, transparent 50%);
+    background: radial-gradient(ellipse at 20% 50%, hsl(0 72% 48% / 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, hsl(35 90% 48% / 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 80%, hsl(145 50% 32% / 0.03) 0%, transparent 50%);
     animation: bg-drift 20s ease-in-out infinite;
     pointer-events: none;
     z-index: 0;
