@@ -14,6 +14,7 @@ const SiteHeader = () => {
   const { user, roles } = useAuth();
   const isAdmin = roles.includes('admin') || roles.includes('editor');
   const { data: categories } = useCategories();
+  const { theme, setTheme } = useTheme();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
