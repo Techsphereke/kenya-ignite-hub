@@ -28,7 +28,7 @@ const AuthPage = () => {
         options: { data: { display_name: displayName }, emailRedirectTo: window.location.origin },
       });
       if (error) toast.error(error.message);
-      else toast.success('Account created! Check your email to confirm.');
+      else { toast.success('Account created! You are now signed in.'); navigate('/dashboard'); }
     }
     setLoading(false);
   };
