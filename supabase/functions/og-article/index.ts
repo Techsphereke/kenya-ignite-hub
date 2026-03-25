@@ -9,6 +9,7 @@ const corsHeaders = {
 const SITE_URL = "https://kenyaignite.co.ke";
 const SITE_NAME = "Kenya Ignite";
 const FALLBACK_IMAGE = `${SITE_URL}/og-image.png`;
+const FAVICON_URL = `${SITE_URL}/favicon.png`;
 
 function escapeHtml(text: string): string {
   return text
@@ -17,10 +18,6 @@ function escapeHtml(text: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-function escapeJsonLd(text: string): string {
-  return text.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n");
 }
 
 Deno.serve(async (req) => {
@@ -45,47 +42,38 @@ Deno.serve(async (req) => {
 
   const { data: article } = await supabase
     .from("articles")
-    .select("title, excerpt, cover_image, slug, published_at, content, reading_time")
+    .select("title, excerpt, cover_image, slug, published_at, author_id, reading_time")
     .eq("slug", slug)
     .eq("status", "approved")
     .single();
 
   if (!article) {
-    return new Response(JSON.stringify({ error: "Article not found" }), {
-      status: 404,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // Redirect to homepage if article not found
+    return new Response(null, {
+      status: 302,
+      headers: { ...corsHeaders, Location: SITE_URL },
     });
   }
 
-  // Fetch author name via author_id join
-  const { data: fullArticle } = await supabase
-    .from("articles")
-    .select("author_id")
-    .eq("slug", slug)
-    .single();
-
   let authorName = SITE_NAME;
-  if (fullArticle?.author_id) {
+  if (article.author_id) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("display_name")
-      .eq("user_id", fullArticle.author_id)
+      .eq("user_id", article.author_id)
       .single();
     if (profile?.display_name) authorName = profile.display_name;
   }
 
   const articleUrl = `${SITE_URL}/article/${article.slug}`;
-  const image = article.cover_image || FALLBACK_IMAGE;
+  const image = article.cover_image && article.cover_image.startsWith("http")
+    ? article.cover_image
+    : FALLBACK_IMAGE;
   const title = escapeHtml(article.title);
-  const description = escapeHtml(
-    article.excerpt || "Read more on Kenya Ignite"
-  );
+  const description = escapeHtml(article.excerpt || "Read more on Kenya Ignite");
   const publishedAt = article.published_at || new Date().toISOString();
-
-  // Plain text excerpt for JSON-LD (strip HTML from content as fallback)
   const plainExcerpt = article.excerpt || "Read more on Kenya Ignite";
 
-  // JSON-LD structured data
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "NewsArticle",
@@ -94,22 +82,13 @@ Deno.serve(async (req) => {
     image: [image],
     datePublished: publishedAt,
     dateModified: publishedAt,
-    author: {
-      "@type": "Person",
-      name: authorName,
-    },
+    author: { "@type": "Person", name: authorName },
     publisher: {
       "@type": "Organization",
       name: SITE_NAME,
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE_URL}/favicon.png`,
-      },
+      logo: { "@type": "ImageObject", url: FAVICON_URL },
     },
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": articleUrl,
-    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
     url: articleUrl,
   });
 
@@ -120,6 +99,7 @@ Deno.serve(async (req) => {
   <title>${title} — ${SITE_NAME}</title>
   <meta name="description" content="${description}" />
   <link rel="canonical" href="${articleUrl}" />
+  <link rel="icon" href="${FAVICON_URL}" type="image/png" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="article" />
@@ -139,12 +119,13 @@ Deno.serve(async (req) => {
   <meta name="twitter:image" content="${image}" />
   <meta name="twitter:site" content="@KenyaIgnite" />
 
-  <!-- JSON-LD Structured Data -->
+  <!-- JSON-LD -->
   <script type="application/ld+json">${jsonLd}</script>
 
   <meta http-equiv="refresh" content="0;url=${articleUrl}" />
 </head>
 <body>
+  <script>location.replace(${JSON.stringify(articleUrl)});</script>
   <p>Redirecting to <a href="${articleUrl}">${title}</a>...</p>
 </body>
 </html>`;

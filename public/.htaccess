@@ -3,11 +3,10 @@
   RewriteBase /
 
   # Redirect social media crawlers to the OG edge function for article pages
-  # Covers: Facebook, WhatsApp, Twitter, LinkedIn, Telegram, Discord, Slack,
-  # Pinterest, Google bots, Viber, Skype, Reddit, Tumblr, Mastodon
+  # The edge function serves HTML with proper OG meta tags and redirects humans back
   RewriteCond %{HTTP_USER_AGENT} facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Google-Structured-Data-Testing-Tool|Googlebot|vkShare|PinterestBot|Viber|SkypeUriPreview|redditbot|Tumblr|Mastodon|Embedly|Quora\ Link\ Preview|Iframely|outbrain|W3C_Validator [NC]
   RewriteCond %{REQUEST_URI} ^/article/(.+)$ [NC]
-  RewriteRule ^article/(.+)$ https://fxnlvjbuyxzjpmlvjfmh.supabase.co/functions/v1/og-article?slug=$1 [R=302,L]
+  RewriteRule ^article/(.+)$ https://fxnlvjbuyxzjpmlvjfmh.supabase.co/functions/v1/og-article?slug=$1 [P,L]
 
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
