@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, Menu, X, Flame, User } from 'lucide-react';
 import { categories } from '@/data/demo-data';
 import { useAuth } from '@/contexts/AuthContext';
+import { Shield } from 'lucide-react';
 
 const SiteHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
