@@ -57,7 +57,7 @@ const Dashboard = () => {
       title: title.trim(), slug: '', excerpt: excerpt || '', content: content || '',
       cover_image: cover_image || null, category_id: category_id || null, tags: tags || [],
       author_id: user.id, status,
-      published_at: status === 'approved' ? new Date().toISOString() : null,
+      published_at: (status === 'approved' || status === 'pending') ? new Date().toISOString() : null,
     };
     let error;
     if (editingArticle.id) {
@@ -68,7 +68,7 @@ const Dashboard = () => {
       error = res.error;
     }
     if (error) { toast.error(error.message); }
-    else { toast.success(status === 'pending' ? 'Submitted for review!' : 'Article saved!'); setView('list'); setEditingArticle(null); fetchArticles(); }
+    else { toast.success(status === 'approved' ? 'Article published!' : 'Article saved!'); setView('list'); setEditingArticle(null); fetchArticles(); }
   };
 
   const handleDelete = async (id: string) => {
@@ -162,9 +162,9 @@ const Dashboard = () => {
                   className="px-5 py-2.5 glass-card rounded-xl font-body text-sm font-medium text-foreground hover:bg-muted/50 transition-all duration-300">
                   Save Draft
                 </button>
-                <button onClick={() => handleSave('pending')}
+                <button onClick={() => handleSave('approved')}
                   className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-body text-sm font-medium hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300 flex items-center gap-1.5">
-                  <Send className="w-4 h-4" /> Submit for Review
+                  <Send className="w-4 h-4" /> Publish
                 </button>
               </div>
             </div>
