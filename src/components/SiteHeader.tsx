@@ -49,6 +49,9 @@ const SiteHeader = () => {
           <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 rounded-md hover:bg-muted transition-colors" aria-label="Search">
             <Search className="w-5 h-5 text-foreground" />
           </button>
+          <Link to={user ? '/dashboard' : '/auth'} className="p-2 rounded-md hover:bg-muted transition-colors" aria-label={user ? 'Dashboard' : 'Sign in'}>
+            <User className="w-5 h-5 text-foreground" />
+          </Link>
           <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 rounded-md hover:bg-muted transition-colors md:hidden" aria-label="Menu">
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
