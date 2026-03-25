@@ -19,8 +19,10 @@ export interface DbArticle {
   published_at: string | null;
   created_at: string;
   updated_at: string;
-  profiles?: { display_name: string; avatar_url: string | null } | null;
-  categories?: { name: string; slug: string } | null;
+  author_name?: string;
+  author_avatar?: string | null;
+  category_name?: string;
+  category_slug?: string;
 }
 
 export interface DbCategory {
@@ -38,7 +40,29 @@ export interface DbComment {
   created_at: string;
 }
 
-const articleSelect = '*, profiles!articles_author_id_fkey(display_name, avatar_url), categories(name, slug)';
+async function enrichArticles(articles: any[]): Promise<DbArticle[]> {
+  if (articles.length === 0) return [];
+  const authorIds = [...new Set(articles.map(a => a.author_id))];
+  const categoryIds = [...new Set(articles.map(a => a.category_id).filter(Boolean))];
+
+  const [profilesRes, categoriesRes] = await Promise.all([
+    supabase.from('profiles').select('user_id, display_name, avatar_url').in('user_id', authorIds),
+    categoryIds.length > 0
+      ? supabase.from('categories').select('id, name, slug').in('id', categoryIds)
+      : Promise.resolve({ data: [] }),
+  ]);
+
+  const profiles = new Map((profilesRes.data || []).map(p => [p.user_id, p]));
+  const cats = new Map(((categoriesRes as any).data || []).map((c: any) => [c.id, c]));
+
+  return articles.map(a => ({
+    ...a,
+    author_name: profiles.get(a.author_id)?.display_name || 'Unknown',
+    author_avatar: profiles.get(a.author_id)?.avatar_url || null,
+    category_name: cats.get(a.category_id)?.name || undefined,
+    category_slug: cats.get(a.category_id)?.slug || undefined,
+  }));
+}
 
 export function useCategories() {
   return useQuery({
@@ -56,13 +80,10 @@ export function useFeaturedArticles() {
     queryKey: ['articles', 'featured'],
     queryFn: async () => {
       const { data } = await supabase
-        .from('articles')
-        .select(articleSelect)
-        .eq('status', 'approved')
-        .eq('is_featured', true)
-        .order('published_at', { ascending: false })
-        .limit(4);
-      return (data || []) as DbArticle[];
+        .from('articles').select('*')
+        .eq('status', 'approved').eq('is_featured', true)
+        .order('published_at', { ascending: false }).limit(4);
+      return enrichArticles(data || []);
     },
   });
 }
@@ -72,12 +93,9 @@ export function useBreakingArticles() {
     queryKey: ['articles', 'breaking'],
     queryFn: async () => {
       const { data } = await supabase
-        .from('articles')
-        .select('id, title, slug')
-        .eq('status', 'approved')
-        .eq('is_breaking', true)
-        .order('published_at', { ascending: false })
-        .limit(10);
+        .from('articles').select('id, title, slug')
+        .eq('status', 'approved').eq('is_breaking', true)
+        .order('published_at', { ascending: false }).limit(10);
       return (data || []) as Pick<DbArticle, 'id' | 'title' | 'slug'>[];
     },
   });
@@ -88,12 +106,10 @@ export function useLatestArticles(limit = 10) {
     queryKey: ['articles', 'latest', limit],
     queryFn: async () => {
       const { data } = await supabase
-        .from('articles')
-        .select(articleSelect)
+        .from('articles').select('*')
         .eq('status', 'approved')
-        .order('published_at', { ascending: false })
-        .limit(limit);
-      return (data || []) as DbArticle[];
+        .order('published_at', { ascending: false }).limit(limit);
+      return enrichArticles(data || []);
     },
   });
 }
@@ -103,12 +119,10 @@ export function useTrendingArticles() {
     queryKey: ['articles', 'trending'],
     queryFn: async () => {
       const { data } = await supabase
-        .from('articles')
-        .select(articleSelect)
+        .from('articles').select('*')
         .eq('status', 'approved')
-        .order('views', { ascending: false })
-        .limit(5);
-      return (data || []) as DbArticle[];
+        .order('views', { ascending: false }).limit(5);
+      return enrichArticles(data || []);
     },
   });
 }
@@ -117,15 +131,11 @@ export function useArticlesByCategory(categoryId: string | undefined) {
   return useQuery({
     queryKey: ['articles', 'category', categoryId],
     queryFn: async () => {
-      if (!categoryId) return [];
       const { data } = await supabase
-        .from('articles')
-        .select(articleSelect)
-        .eq('status', 'approved')
-        .eq('category_id', categoryId)
-        .order('published_at', { ascending: false })
-        .limit(20);
-      return (data || []) as DbArticle[];
+        .from('articles').select('*')
+        .eq('status', 'approved').eq('category_id', categoryId!)
+        .order('published_at', { ascending: false }).limit(20);
+      return enrichArticles(data || []);
     },
     enabled: !!categoryId,
   });
@@ -136,12 +146,11 @@ export function useArticleBySlug(slug: string) {
     queryKey: ['article', slug],
     queryFn: async () => {
       const { data } = await supabase
-        .from('articles')
-        .select(articleSelect)
-        .eq('slug', slug)
-        .eq('status', 'approved')
-        .single();
-      return data as DbArticle | null;
+        .from('articles').select('*')
+        .eq('slug', slug).eq('status', 'approved').single();
+      if (!data) return null;
+      const enriched = await enrichArticles([data]);
+      return enriched[0] || null;
     },
     enabled: !!slug,
   });
@@ -151,11 +160,9 @@ export function useArticleComments(articleId: string | undefined) {
   return useQuery({
     queryKey: ['comments', articleId],
     queryFn: async () => {
-      if (!articleId) return [];
       const { data } = await supabase
-        .from('comments')
-        .select('*')
-        .eq('article_id', articleId)
+        .from('comments').select('*')
+        .eq('article_id', articleId!)
         .order('created_at', { ascending: true });
       return (data || []) as DbComment[];
     },
@@ -167,15 +174,12 @@ export function useSearchArticles(query: string) {
   return useQuery({
     queryKey: ['articles', 'search', query],
     queryFn: async () => {
-      if (!query) return [];
       const { data } = await supabase
-        .from('articles')
-        .select(articleSelect)
+        .from('articles').select('*')
         .eq('status', 'approved')
         .or(`title.ilike.%${query}%,excerpt.ilike.%${query}%`)
-        .order('published_at', { ascending: false })
-        .limit(30);
-      return (data || []) as DbArticle[];
+        .order('published_at', { ascending: false }).limit(30);
+      return enrichArticles(data || []);
     },
     enabled: !!query,
   });
@@ -186,10 +190,7 @@ export function useCategoryBySlug(slug: string) {
     queryKey: ['category', slug],
     queryFn: async () => {
       const { data } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('slug', slug)
-        .single();
+        .from('categories').select('*').eq('slug', slug).single();
       return data as DbCategory | null;
     },
     enabled: !!slug,
