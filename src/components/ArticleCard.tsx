@@ -57,7 +57,7 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
             {article.category_name && <span className="text-xs font-body font-semibold text-primary uppercase tracking-wider">{article.category_name}</span>}
-            <h2 className="text-lg md:text-2xl font-display font-bold text-foreground leading-tight mt-1 group-hover:text-primary transition-colors duration-300">
+            <h2 className="text-lg md:text-2xl font-display font-bold text-white leading-tight mt-1 group-hover:text-primary-foreground transition-colors duration-300">
               {article.title}
             </h2>
             <p className="text-sm text-foreground/60 font-body mt-1.5 line-clamp-2 hidden md:block">{article.excerpt}</p>
