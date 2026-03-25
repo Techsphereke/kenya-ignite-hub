@@ -57,7 +57,7 @@ const Dashboard = () => {
       title: title.trim(), slug: '', excerpt: excerpt || '', content: content || '',
       cover_image: cover_image || null, category_id: category_id || null, tags: tags || [],
       author_id: user.id, status,
-      published_at: status === 'approved' ? new Date().toISOString() : null,
+      published_at: (status === 'approved' || status === 'pending') ? new Date().toISOString() : null,
     };
     let error;
     if (editingArticle.id) {
