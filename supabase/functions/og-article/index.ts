@@ -6,6 +6,15 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -43,8 +52,8 @@ Deno.serve(async (req) => {
   const siteUrl = "https://kenyaignite.co.ke";
   const articleUrl = `${siteUrl}/article/${article.slug}`;
   const image = article.cover_image || `${siteUrl}/og-image.png`;
-  const title = article.title;
-  const description = article.excerpt || "Read more on Kenya Ignite";
+  const title = escapeHtml(article.title);
+  const description = escapeHtml(article.excerpt || "Read more on Kenya Ignite");
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -70,6 +79,10 @@ Deno.serve(async (req) => {
 </html>`;
 
   return new Response(html, {
-    headers: { ...corsHeaders, "Content-Type": "text/html; charset=utf-8" },
+    headers: new Headers({
+      ...corsHeaders,
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+    }),
   });
 });
