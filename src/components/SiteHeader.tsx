@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, Flame, User, Shield } from 'lucide-react';
+import { Search, Menu, X, Flame, User, Shield, Sun, Moon } from 'lucide-react';
 import { useCategories } from '@/hooks/use-articles';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from 'next-themes';
 
 const SiteHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
