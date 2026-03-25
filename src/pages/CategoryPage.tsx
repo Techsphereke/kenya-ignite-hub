@@ -2,13 +2,23 @@ import { useParams, Link } from 'react-router-dom';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
-import { getCategoryBySlug, getArticlesByCategory } from '@/data/demo-data';
+import { useCategoryBySlug, useArticlesByCategory } from '@/hooks/use-articles';
 import { ArrowLeft } from 'lucide-react';
 
 const CategoryPage = () => {
   const { slug } = useParams();
-  const category = getCategoryBySlug(slug || '');
-  const articles = category ? getArticlesByCategory(category.id) : [];
+  const { data: category, isLoading: catLoading } = useCategoryBySlug(slug || '');
+  const { data: articles } = useArticlesByCategory(category?.id);
+
+  if (catLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <div className="container py-20 text-center font-body text-muted-foreground">Loading...</div>
+        <SiteFooter />
+      </div>
+    );
+  }
 
   if (!category) {
     return (
@@ -35,9 +45,9 @@ const CategoryPage = () => {
           {category.name}
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {articles.map(a => <ArticleCard key={a.id} article={a} />)}
+          {(articles || []).map(a => <ArticleCard key={a.id} article={a} />)}
         </div>
-        {articles.length === 0 && (
+        {(!articles || articles.length === 0) && (
           <p className="text-center text-muted-foreground font-body py-16">No articles in this category yet.</p>
         )}
       </div>

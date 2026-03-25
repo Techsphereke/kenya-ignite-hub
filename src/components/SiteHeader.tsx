@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, Flame, User } from 'lucide-react';
-import { categories } from '@/data/demo-data';
+import { Search, Menu, X, Flame, User, Shield } from 'lucide-react';
+import { useCategories } from '@/hooks/use-articles';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield } from 'lucide-react';
 
 const SiteHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,6 +11,7 @@ const SiteHeader = () => {
   const navigate = useNavigate();
   const { user, roles } = useAuth();
   const isAdmin = roles.includes('admin') || roles.includes('editor');
+  const { data: categories } = useCategories();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,7 +87,7 @@ const SiteHeader = () => {
       {/* Category nav */}
       <nav className="border-t border-border hidden md:block">
         <div className="container flex items-center gap-6 py-2">
-          {categories.map(cat => (
+          {(categories || []).map(cat => (
             <Link key={cat.id} to={`/category/${cat.slug}`}
               className="text-sm font-body font-medium text-muted-foreground hover:text-primary transition-colors whitespace-nowrap">
               {cat.name}
@@ -100,7 +100,7 @@ const SiteHeader = () => {
       {menuOpen && (
         <nav className="border-t border-border md:hidden bg-card">
           <div className="container py-3 flex flex-col gap-2">
-            {categories.map(cat => (
+            {(categories || []).map(cat => (
               <Link key={cat.id} to={`/category/${cat.slug}`}
                 onClick={() => setMenuOpen(false)}
                 className="py-2 text-sm font-body font-medium text-muted-foreground hover:text-primary transition-colors">

@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Zap } from 'lucide-react';
-import { getBreakingNews } from '@/data/demo-data';
+import { useBreakingArticles } from '@/hooks/use-articles';
 
 const BreakingNewsTicker = () => {
-  const breaking = getBreakingNews();
-  if (breaking.length === 0) return null;
+  const { data: breaking } = useBreakingArticles();
+  if (!breaking || breaking.length === 0) return null;
 
-  const items = [...breaking, ...breaking]; // duplicate for seamless loop
+  const items = [...breaking, ...breaking];
 
   return (
     <div className="bg-primary overflow-hidden">
