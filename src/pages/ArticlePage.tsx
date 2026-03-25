@@ -221,6 +221,43 @@ const ArticlePage = () => {
                 )}
               </div>
             </div>
+
+            {/* Voice & Speed controls */}
+            <div className="flex flex-col sm:flex-row gap-3 mt-3">
+              {tts.voices.length > 1 && (
+                <div className="flex-1 relative">
+                  <label className="text-xs font-body text-muted-foreground mb-1 block">Voice</label>
+                  <select
+                    value={tts.selectedVoiceIndex}
+                    onChange={(e) => { tts.setSelectedVoiceIndex(Number(e.target.value)); if (tts.isPlaying) { tts.stop(); } }}
+                    className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-border/50 text-foreground font-body text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none pr-8"
+                  >
+                    {tts.voices.map((v, i) => (
+                      <option key={`${v.name}-${i}`} value={i}>
+                        {v.name.replace(/^(Microsoft |Google |Apple )/, '')} ({v.lang})
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-muted-foreground absolute right-2.5 top-[1.85rem] pointer-events-none" />
+                </div>
+              )}
+              <div className="w-full sm:w-36">
+                <label className="text-xs font-body text-muted-foreground mb-1 block">Speed: {tts.rate}x</label>
+                <div className="flex items-center gap-1.5">
+                  {[0.75, 1, 1.25, 1.5].map(s => (
+                    <button key={s} onClick={() => { tts.setRate(s); if (tts.isPlaying) { tts.stop(); } }}
+                      className={`flex-1 px-1.5 py-1.5 rounded-md text-xs font-body font-medium transition-all duration-200 ${
+                        tts.rate === s
+                          ? 'bg-primary text-primary-foreground shadow-[0_0_10px_hsl(var(--primary)/0.3)]'
+                          : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                      }`}>
+                      {s}x
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {tts.isPlaying && (
               <div className="mt-3">
                 <div className="w-full h-1.5 bg-muted/50 rounded-full overflow-hidden">
