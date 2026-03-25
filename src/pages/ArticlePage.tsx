@@ -92,6 +92,10 @@ const CommentItem = ({ comment, replies }: { comment: DbComment; replies: DbComm
 
 const ArticlePage = () => {
   const { slug } = useParams();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
   const { data: article, isLoading } = useArticleBySlug(slug || '');
   const { data: comments, refetch: refetchComments } = useArticleComments(article?.id);
   const { data: allLatest } = useLatestArticles(10);
