@@ -71,7 +71,6 @@ const SiteHeader = () => {
             </h1>
           </div>
         </Link>
-        </Link>
 
         <div className="flex items-center gap-1">
           {[
