@@ -56,7 +56,7 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
           <img src={article.cover_image || '/placeholder.svg'} alt={article.title} className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-            {article.category_name && <span className="text-xs font-body font-semibold text-primary uppercase tracking-wider">{article.category_name}</span>}
+            {article.category_name && <span className="text-xs font-body font-semibold text-primary-foreground/90 uppercase tracking-wider">{article.category_name}</span>}
             <h2 className="text-lg md:text-2xl font-display font-bold text-white leading-tight mt-1 group-hover:text-primary-foreground transition-colors duration-300">
               {article.title}
             </h2>
