@@ -10,7 +10,8 @@ const SiteHeader = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, roles } = useAuth();
+  const isAdmin = roles.includes('admin') || roles.includes('editor');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
