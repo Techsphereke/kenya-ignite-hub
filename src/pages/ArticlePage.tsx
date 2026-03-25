@@ -5,7 +5,7 @@ import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
 import { useArticleBySlug, useArticleComments, useLatestArticles, formatDate, DbComment } from '@/hooks/use-articles';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Volume2, Pause, Play, Square, SkipForward, SkipBack } from 'lucide-react';
+import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Volume2, Pause, Play, Square, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -20,13 +20,30 @@ function useTextToSpeech(text: string) {
   const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0);
   const [supported, setSupported] = useState(true);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const intervalRef = useRef<number | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoiceIndex, setSelectedVoiceIndex] = useState<number>(0);
+  const [rate, setRate] = useState(1);
   const totalCharsRef = useRef(0);
 
   useEffect(() => {
-    setSupported('speechSynthesis' in window);
-    return () => { window.speechSynthesis?.cancel(); clearInterval(intervalRef.current!); };
+    if (!('speechSynthesis' in window)) { setSupported(false); return; }
+    const loadVoices = () => {
+      const v = window.speechSynthesis.getVoices().filter(voice => voice.lang.startsWith('en'));
+      if (v.length > 0) {
+        setVoices(v);
+        // Prefer a voice with "Kenya", "Africa", "Female", or "Google" in the name
+        const preferred = v.findIndex(voice =>
+          /kenya|swahili|africa/i.test(voice.name)
+        );
+        const googleFemale = v.findIndex(voice =>
+          /google.*female|female.*english/i.test(voice.name)
+        );
+        setSelectedVoiceIndex(preferred >= 0 ? preferred : googleFemale >= 0 ? googleFemale : 0);
+      }
+    };
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    return () => { window.speechSynthesis?.cancel(); };
   }, []);
 
   const play = useCallback(() => {
@@ -35,37 +52,24 @@ function useTextToSpeech(text: string) {
     const plainText = stripHtml(text);
     totalCharsRef.current = plainText.length;
     const utt = new SpeechSynthesisUtterance(plainText);
-    utt.rate = 1;
+    utt.rate = rate;
     utt.pitch = 1;
+    if (voices[selectedVoiceIndex]) utt.voice = voices[selectedVoiceIndex];
     utt.onboundary = (e) => {
       if (e.charIndex && totalCharsRef.current) setProgress(Math.round((e.charIndex / totalCharsRef.current) * 100));
     };
-    utt.onend = () => { setIsPlaying(false); setIsPaused(false); setProgress(100); clearInterval(intervalRef.current!); };
+    utt.onend = () => { setIsPlaying(false); setIsPaused(false); setProgress(100); };
     utt.onerror = () => { setIsPlaying(false); setIsPaused(false); setProgress(0); };
-    utteranceRef.current = utt;
     window.speechSynthesis.speak(utt);
     setIsPlaying(true);
     setIsPaused(false);
-  }, [text, supported]);
+  }, [text, supported, rate, voices, selectedVoiceIndex]);
 
-  const pause = useCallback(() => {
-    window.speechSynthesis.pause();
-    setIsPaused(true);
-  }, []);
+  const pause = useCallback(() => { window.speechSynthesis.pause(); setIsPaused(true); }, []);
+  const resume = useCallback(() => { window.speechSynthesis.resume(); setIsPaused(false); }, []);
+  const stop = useCallback(() => { window.speechSynthesis.cancel(); setIsPlaying(false); setIsPaused(false); setProgress(0); }, []);
 
-  const resume = useCallback(() => {
-    window.speechSynthesis.resume();
-    setIsPaused(false);
-  }, []);
-
-  const stop = useCallback(() => {
-    window.speechSynthesis.cancel();
-    setIsPlaying(false);
-    setIsPaused(false);
-    setProgress(0);
-  }, []);
-
-  return { isPlaying, isPaused, progress, supported, play, pause, resume, stop };
+  return { isPlaying, isPaused, progress, supported, voices, selectedVoiceIndex, setSelectedVoiceIndex, rate, setRate, play, pause, resume, stop };
 }
 
 const CommentItem = ({ comment, replies }: { comment: DbComment; replies: DbComment[] }) => (
@@ -217,6 +221,43 @@ const ArticlePage = () => {
                 )}
               </div>
             </div>
+
+            {/* Voice & Speed controls */}
+            <div className="flex flex-col sm:flex-row gap-3 mt-3">
+              {tts.voices.length > 1 && (
+                <div className="flex-1 relative">
+                  <label className="text-xs font-body text-muted-foreground mb-1 block">Voice</label>
+                  <select
+                    value={tts.selectedVoiceIndex}
+                    onChange={(e) => { tts.setSelectedVoiceIndex(Number(e.target.value)); if (tts.isPlaying) { tts.stop(); } }}
+                    className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-border/50 text-foreground font-body text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none pr-8"
+                  >
+                    {tts.voices.map((v, i) => (
+                      <option key={`${v.name}-${i}`} value={i}>
+                        {v.name.replace(/^(Microsoft |Google |Apple )/, '')} ({v.lang})
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 text-muted-foreground absolute right-2.5 top-[1.85rem] pointer-events-none" />
+                </div>
+              )}
+              <div className="w-full sm:w-36">
+                <label className="text-xs font-body text-muted-foreground mb-1 block">Speed: {tts.rate}x</label>
+                <div className="flex items-center gap-1.5">
+                  {[0.75, 1, 1.25, 1.5].map(s => (
+                    <button key={s} onClick={() => { tts.setRate(s); if (tts.isPlaying) { tts.stop(); } }}
+                      className={`flex-1 px-1.5 py-1.5 rounded-md text-xs font-body font-medium transition-all duration-200 ${
+                        tts.rate === s
+                          ? 'bg-primary text-primary-foreground shadow-[0_0_10px_hsl(var(--primary)/0.3)]'
+                          : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                      }`}>
+                      {s}x
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {tts.isPlaying && (
               <div className="mt-3">
                 <div className="w-full h-1.5 bg-muted/50 rounded-full overflow-hidden">
