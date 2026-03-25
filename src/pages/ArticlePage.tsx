@@ -1,13 +1,72 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
 import { useArticleBySlug, useArticleComments, useLatestArticles, formatDate, DbComment } from '@/hooks/use-articles';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye } from 'lucide-react';
+import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Volume2, Pause, Play, Square, SkipForward, SkipBack } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+
+function stripHtml(html: string): string {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  return div.textContent || div.innerText || '';
+}
+
+function useTextToSpeech(text: string) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [supported, setSupported] = useState(true);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const intervalRef = useRef<number | null>(null);
+  const totalCharsRef = useRef(0);
+
+  useEffect(() => {
+    setSupported('speechSynthesis' in window);
+    return () => { window.speechSynthesis?.cancel(); clearInterval(intervalRef.current!); };
+  }, []);
+
+  const play = useCallback(() => {
+    if (!text || !supported) return;
+    window.speechSynthesis.cancel();
+    const plainText = stripHtml(text);
+    totalCharsRef.current = plainText.length;
+    const utt = new SpeechSynthesisUtterance(plainText);
+    utt.rate = 1;
+    utt.pitch = 1;
+    utt.onboundary = (e) => {
+      if (e.charIndex && totalCharsRef.current) setProgress(Math.round((e.charIndex / totalCharsRef.current) * 100));
+    };
+    utt.onend = () => { setIsPlaying(false); setIsPaused(false); setProgress(100); clearInterval(intervalRef.current!); };
+    utt.onerror = () => { setIsPlaying(false); setIsPaused(false); setProgress(0); };
+    utteranceRef.current = utt;
+    window.speechSynthesis.speak(utt);
+    setIsPlaying(true);
+    setIsPaused(false);
+  }, [text, supported]);
+
+  const pause = useCallback(() => {
+    window.speechSynthesis.pause();
+    setIsPaused(true);
+  }, []);
+
+  const resume = useCallback(() => {
+    window.speechSynthesis.resume();
+    setIsPaused(false);
+  }, []);
+
+  const stop = useCallback(() => {
+    window.speechSynthesis.cancel();
+    setIsPlaying(false);
+    setIsPaused(false);
+    setProgress(0);
+  }, []);
+
+  return { isPlaying, isPaused, progress, supported, play, pause, resume, stop };
+}
 
 const CommentItem = ({ comment, replies }: { comment: DbComment; replies: DbComment[] }) => (
   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="py-4 border-b border-border/30 last:border-0">
@@ -35,6 +94,7 @@ const ArticlePage = () => {
   const [commentName, setCommentName] = useState('');
   const [commentText, setCommentText] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const tts = useTextToSpeech(article?.content || '');
 
   const related = (allLatest || []).filter(a => a.id !== article?.id && a.category_id === article?.category_id).slice(0, 3);
   const topLevel = (comments || []).filter(c => !c.parent_id);
@@ -60,9 +120,10 @@ const ArticlePage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background animated-bg noise-overlay">
-        <SiteHeader />
+
+  return (
+    <div className="min-h-screen bg-background animated-bg noise-overlay">
+      <SiteHeader />
         <div className="container py-20 text-center font-body text-muted-foreground">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
@@ -125,6 +186,54 @@ const ArticlePage = () => {
             <Twitter className="w-4 h-4" />
           </a>
         </div>
+
+        {/* Audio Reader */}
+        {tts.supported && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }}
+            className="mt-4 glass-card rounded-xl p-4 glow-border">
+            <div className="flex items-center gap-3">
+              <Volume2 className="w-5 h-5 text-primary flex-shrink-0" />
+              <span className="text-sm font-body font-semibold text-foreground">Listen to this article</span>
+              <div className="flex items-center gap-1.5 ml-auto">
+                {!tts.isPlaying ? (
+                  <button onClick={tts.play}
+                    className="p-2 rounded-lg bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300"
+                    aria-label="Play article">
+                    <Play className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <>
+                    <button onClick={tts.isPaused ? tts.resume : tts.pause}
+                      className="p-2 rounded-lg bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300"
+                      aria-label={tts.isPaused ? 'Resume' : 'Pause'}>
+                      {tts.isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+                    </button>
+                    <button onClick={tts.stop}
+                      className="p-2 rounded-lg bg-muted/50 text-muted-foreground hover:bg-destructive hover:text-destructive-foreground transition-all duration-300"
+                      aria-label="Stop">
+                      <Square className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+            {tts.isPlaying && (
+              <div className="mt-3">
+                <div className="w-full h-1.5 bg-muted/50 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-primary rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${tts.progress}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground font-body mt-1.5">
+                  {tts.isPaused ? 'Paused' : 'Playing...'} · {tts.progress}%
+                </p>
+              </div>
+            )}
+          </motion.div>
+        )}
 
         {/* Content */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}
