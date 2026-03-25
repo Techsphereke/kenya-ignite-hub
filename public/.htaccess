@@ -1,6 +1,12 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # Redirect social media crawlers to the OG edge function for article pages
+  RewriteCond %{HTTP_USER_AGENT} facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Google-Structured-Data-Testing-Tool|vkShare|PinterestBot [NC]
+  RewriteCond %{REQUEST_URI} ^/article/(.+)$ [NC]
+  RewriteRule ^article/(.+)$ https://fxnlvjbuyxzjpmlvjfmh.supabase.co/functions/v1/og-article?slug=$1 [R=302,L]
+
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
