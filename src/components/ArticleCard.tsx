@@ -69,11 +69,14 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
               {article.title}
             </h2>
             <p className="text-sm text-white/70 font-body mt-1.5 line-clamp-2 hidden md:block">{article.excerpt}</p>
-            <div className="flex items-center gap-2 mt-2 text-xs text-white/50 font-body">
+            <div className="flex items-center gap-2 mt-2 text-xs text-white/60 font-body">
               <span>{article.author_name}</span>
               <span className="text-white/30">·</span>
               <Clock className="w-3 h-3" />
               <span>{article.reading_time} min read</span>
+              <span className="text-white/30">·</span>
+              <Eye className="w-3 h-3" />
+              <span>{formatViews(article.views || 0)}</span>
             </div>
           </div>
         </Link>
