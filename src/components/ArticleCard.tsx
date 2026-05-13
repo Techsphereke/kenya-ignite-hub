@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Clock } from 'lucide-react';
+import { Clock, Eye } from 'lucide-react';
 import { DbArticle, timeAgo } from '@/hooks/use-articles';
+
+const formatViews = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : `${n}`;
 import { motion } from 'framer-motion';
 
 interface ArticleCardProps {
@@ -17,7 +19,11 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
           <h3 className="text-sm font-display font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-300">
             {article.title}
           </h3>
-          <span className="text-xs text-muted-foreground font-body mt-1 block">{timeAgo(article.published_at)}</span>
+          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground font-body">
+            <span>{timeAgo(article.published_at)}</span>
+            <span className="text-primary/40">·</span>
+            <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{formatViews(article.views || 0)}</span>
+          </div>
         </div>
       </Link>
     );
@@ -42,6 +48,8 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
               <span>{article.author_name}</span>
               <span className="text-primary/40">·</span>
               <span>{timeAgo(article.published_at)}</span>
+              <span className="text-primary/40">·</span>
+              <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{formatViews(article.views || 0)}</span>
             </div>
           </div>
         </Link>
@@ -61,11 +69,14 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
               {article.title}
             </h2>
             <p className="text-sm text-white/70 font-body mt-1.5 line-clamp-2 hidden md:block">{article.excerpt}</p>
-            <div className="flex items-center gap-2 mt-2 text-xs text-white/50 font-body">
+            <div className="flex items-center gap-2 mt-2 text-xs text-white/60 font-body">
               <span>{article.author_name}</span>
               <span className="text-white/30">·</span>
               <Clock className="w-3 h-3" />
               <span>{article.reading_time} min read</span>
+              <span className="text-white/30">·</span>
+              <Eye className="w-3 h-3" />
+              <span>{formatViews(article.views || 0)}</span>
             </div>
           </div>
         </Link>
@@ -91,6 +102,8 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
               <span>{article.author_name}</span>
               <span className="text-primary/40">·</span>
               <span>{timeAgo(article.published_at)}</span>
+              <span className="text-primary/40">·</span>
+              <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{formatViews(article.views || 0)}</span>
             </div>
           </div>
         </div>
