@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Clock } from 'lucide-react';
+import { Clock, Eye } from 'lucide-react';
 import { DbArticle, timeAgo } from '@/hooks/use-articles';
+
+const formatViews = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : `${n}`;
 import { motion } from 'framer-motion';
 
 interface ArticleCardProps {
