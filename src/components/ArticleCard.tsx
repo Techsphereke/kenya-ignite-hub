@@ -48,6 +48,8 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
               <span>{article.author_name}</span>
               <span className="text-primary/40">·</span>
               <span>{timeAgo(article.published_at)}</span>
+              <span className="text-primary/40">·</span>
+              <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{formatViews(article.views || 0)}</span>
             </div>
           </div>
         </Link>
