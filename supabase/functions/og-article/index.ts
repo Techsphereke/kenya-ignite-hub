@@ -10,6 +10,7 @@ const SITE_URL = "https://kenyaignite.co.ke";
 const SITE_NAME = "Kenya Ignite";
 const FALLBACK_IMAGE = `${SITE_URL}/og-image.png`;
 const FAVICON_URL = `${SITE_URL}/favicon.png`;
+const FALLBACK_DESCRIPTION = "Kenya Ignite brings you breaking news, politics, business, technology, sports, and entertainment from Kenya and East Africa.";
 
 function escapeHtml(text: string): string {
   return text
@@ -18,6 +19,32 @@ function escapeHtml(text: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function stripHtml(text: string | null | undefined): string {
+  return (text ?? "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function truncate(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+}
+
+function normalizeImageUrl(url: string | null | undefined): string {
+  if (!url) return FALLBACK_IMAGE;
+
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:") return FALLBACK_IMAGE;
+    if (parsed.searchParams.has("token") || parsed.searchParams.has("signature")) return FALLBACK_IMAGE;
+
+    return parsed.toString();
+  } catch {
+    return FALLBACK_IMAGE;
+  }
 }
 
 Deno.serve(async (req) => {
@@ -66,13 +93,12 @@ Deno.serve(async (req) => {
   }
 
   const articleUrl = `${SITE_URL}/article/${article.slug}`;
-  const image = article.cover_image && article.cover_image.startsWith("http")
-    ? article.cover_image
-    : FALLBACK_IMAGE;
+  const normalizedExcerpt = truncate(stripHtml(article.excerpt) || FALLBACK_DESCRIPTION, 220);
+  const image = normalizeImageUrl(article.cover_image);
   const title = escapeHtml(article.title);
-  const description = escapeHtml(article.excerpt || "Read more on Kenya Ignite");
+  const description = escapeHtml(normalizedExcerpt);
   const publishedAt = article.published_at || new Date().toISOString();
-  const plainExcerpt = article.excerpt || "Read more on Kenya Ignite";
+  const plainExcerpt = normalizedExcerpt;
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
