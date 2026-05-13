@@ -41,6 +41,14 @@ function normalizeImageUrl(url: string | null | undefined): string {
     if (parsed.protocol !== "https:") return FALLBACK_IMAGE;
     if (parsed.searchParams.has("token") || parsed.searchParams.has("signature")) return FALLBACK_IMAGE;
 
+    const publicStoragePrefix = "/storage/v1/object/public/";
+    if (parsed.hostname.endsWith("supabase.co") && parsed.pathname.includes(publicStoragePrefix)) {
+      const objectPath = parsed.pathname.split(publicStoragePrefix)[1];
+      if (!objectPath) return FALLBACK_IMAGE;
+
+      return `${parsed.origin}/storage/v1/render/image/public/${objectPath}?width=1200&height=630&resize=cover`;
+    }
+
     return parsed.toString();
   } catch {
     return FALLBACK_IMAGE;
@@ -132,6 +140,7 @@ Deno.serve(async (req) => {
   <meta property="og:title" content="${title}" />
   <meta property="og:description" content="${description}" />
   <meta property="og:image" content="${image}" />
+  <meta property="og:image:secure_url" content="${image}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:url" content="${articleUrl}" />
