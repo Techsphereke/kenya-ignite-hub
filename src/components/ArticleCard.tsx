@@ -19,7 +19,11 @@ const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
           <h3 className="text-sm font-display font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-300">
             {article.title}
           </h3>
-          <span className="text-xs text-muted-foreground font-body mt-1 block">{timeAgo(article.published_at)}</span>
+          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground font-body">
+            <span>{timeAgo(article.published_at)}</span>
+            <span className="text-primary/40">·</span>
+            <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{formatViews(article.views || 0)}</span>
+          </div>
         </div>
       </Link>
     );
