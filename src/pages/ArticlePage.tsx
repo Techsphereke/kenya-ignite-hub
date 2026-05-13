@@ -96,6 +96,14 @@ const ArticlePage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (slug) {
+      // Fire-and-forget view increment (deduped per session)
+      const key = `viewed:${slug}`;
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, '1');
+        supabase.rpc('increment_article_views', { article_slug: slug }).then(() => {});
+      }
+    }
   }, [slug]);
   const { data: article, isLoading } = useArticleBySlug(slug || '');
   const { data: comments, refetch: refetchComments } = useArticleComments(article?.id);
