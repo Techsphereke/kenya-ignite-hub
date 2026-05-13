@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
 
   const { data: article } = await supabase
     .from("articles")
-    .select("title, excerpt, cover_image, slug, published_at, author_id, reading_time")
+    .select("title, excerpt, content, cover_image, slug, published_at, author_id, reading_time")
     .eq("slug", slug)
     .eq("status", "approved")
     .single();
@@ -101,7 +101,10 @@ Deno.serve(async (req) => {
   }
 
   const articleUrl = `${SITE_URL}/article/${article.slug}`;
-  const normalizedExcerpt = truncate(stripHtml(article.excerpt) || FALLBACK_DESCRIPTION, 220);
+  const normalizedExcerpt = truncate(
+    stripHtml(article.excerpt) || stripHtml(article.content) || FALLBACK_DESCRIPTION,
+    220,
+  );
   const image = normalizeImageUrl(article.cover_image);
   const title = escapeHtml(article.title);
   const description = escapeHtml(normalizedExcerpt);
