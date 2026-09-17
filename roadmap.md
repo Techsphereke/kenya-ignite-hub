@@ -5,3 +5,6 @@
 - [x] Restyle article, category, search, and sign-in pages
 - [x] Restyle author and admin work areas
 - [x] Verify desktop and mobile previews and correct visual/runtime issues
+
+## Pending (needs your action)
+- [ ] Upload public/.htaccess, public/og.php and public/og-image.png to the kenyaignite.co.ke hosting, then re-run Facebook Sharing Debugger + Twitter Card Validator (use "Scrape Again").
