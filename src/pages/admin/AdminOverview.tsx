@@ -55,17 +55,17 @@ const AdminOverview = () => {
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {cards.map((c, i) => (
           <motion.div key={c.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1, duration: 0.5 }}
-            className={`bg-card border border-foreground/20 rounded-sm p-5 bg-card ${c.gradient} stat-card ${c.glow} transition-all duration-500`}>
+            className={`bg-card border border-border rounded-xl p-5 bg-card ${c.gradient} stat-card ${c.glow} transition-all duration-500`}>
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-body font-medium text-muted-foreground">{c.label}</span>
               <c.icon className="w-5 h-5 text-foreground/40" />
             </div>
-            <span className="text-3xl font-display font-bold text-primary">{c.value}</span>
+            <span className="text-3xl font-display font-black text-primary">{c.value}</span>
           </motion.div>
         ))}
       </div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
-        className="bg-card border border-foreground/20 rounded-sm p-6">
+        className="bg-card border border-border rounded-xl p-6">
         <h2 className="text-lg font-display font-bold text-foreground mb-2">Welcome to the Admin Panel</h2>
         <p className="text-sm font-body text-muted-foreground leading-relaxed">
           Use the sidebar to manage articles, users, and comments. You can approve or reject submitted articles,
