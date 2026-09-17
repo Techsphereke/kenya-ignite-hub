@@ -65,10 +65,10 @@ const AdminArticles = () => {
       <div className="flex flex-wrap gap-2 mb-6">
         {filters.map(f => (
           <button key={f.value} onClick={() => setFilter(f.value)}
-            className={`px-4 py-1.5 rounded-sm text-sm font-body font-medium transition-all duration-300 ${
+            className={`px-4 py-2 rounded-full text-[11px] font-extrabold uppercase tracking-[0.14em] transition-all duration-300 ${
               filter === f.value
-                ? 'bg-primary/20 text-primary shadow-none'
-                : 'bg-muted/30 text-muted-foreground hover:bg-muted/50'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-background border border-border text-muted-foreground hover:text-primary'
             }`}>
             {f.label}
           </button>
@@ -76,9 +76,9 @@ const AdminArticles = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-sm animate-spin" /></div>
+        <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-xl animate-spin" /></div>
       ) : articles.length === 0 ? (
-        <div className="text-center py-16 bg-card border border-foreground/20 rounded-sm">
+        <div className="text-center py-16 bg-card border border-border rounded-xl">
           <FileText className="w-10 h-10 mx-auto text-muted-foreground/40 mb-3" />
           <p className="text-muted-foreground font-body">No articles found</p>
         </div>
@@ -86,24 +86,24 @@ const AdminArticles = () => {
         <div className="space-y-3">
           {articles.map((article, i) => (
             <motion.div key={article.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="bg-card border border-foreground/20 rounded-sm p-4 hover:border-foreground transition-all duration-300">
+              className="bg-card border border-border rounded-xl p-4 hover:border-accent transition-all duration-300">
               <div className="flex items-start gap-4">
                 {article.cover_image && (
-                  <img src={article.cover_image} alt="" className="w-24 h-18 rounded-sm object-cover flex-shrink-0 hidden sm:block" />
+                  <img src={article.cover_image} alt="" className="w-24 h-18 rounded-xl object-cover flex-shrink-0 hidden sm:block" />
                 )}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-display font-semibold text-foreground line-clamp-2">{article.title}</h3>
                   <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                    <span className={`inline-flex px-2 py-0.5 rounded-sm text-xs font-body font-medium ${statusStyles[article.status]}`}>
+                    <span className={`inline-flex px-2 py-0.5 rounded-xl text-xs font-body font-medium ${statusStyles[article.status]}`}>
                       {article.status}
                     </span>
                     {article.is_breaking && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-body font-medium bg-primary/10 text-primary">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs font-body font-medium bg-primary/10 text-primary">
                         <Zap className="w-3 h-3" /> Breaking
                       </span>
                     )}
                     {article.is_featured && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-body font-medium bg-accent/20 text-accent">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs font-body font-medium bg-accent/20 text-accent">
                         <Star className="w-3 h-3" /> Featured
                       </span>
                     )}
@@ -119,26 +119,26 @@ const AdminArticles = () => {
                 <div className="flex flex-col gap-1 flex-shrink-0">
                   {article.status !== 'approved' && (
                     <button onClick={() => updateArticle(article.id, { status: 'approved', published_at: new Date().toISOString() })}
-                      className="p-1.5 rounded-sm hover:bg-secondary/20 text-secondary transition-all duration-300 hover:shadow-[0_0_10px_hsl(var(--secondary)/0.2)]" title="Approve">
+                      className="p-1.5 rounded-xl hover:bg-secondary/20 text-secondary transition-all duration-300 hover:shadow-[0_0_10px_hsl(var(--secondary)/0.2)]" title="Approve">
                       <CheckCircle className="w-4 h-4" />
                     </button>
                   )}
                   {article.status !== 'rejected' && (
                     <button onClick={() => updateArticle(article.id, { status: 'rejected' })}
-                      className="p-1.5 rounded-sm hover:bg-destructive/20 text-destructive transition-all duration-300" title="Reject">
+                      className="p-1.5 rounded-xl hover:bg-destructive/20 text-destructive transition-all duration-300" title="Reject">
                       <XCircle className="w-4 h-4" />
                     </button>
                   )}
                   <button onClick={() => updateArticle(article.id, { is_breaking: !article.is_breaking })}
-                    className={`p-1.5 rounded-sm transition-all duration-300 ${article.is_breaking ? 'text-primary bg-primary/10 shadow-none' : 'text-muted-foreground hover:bg-muted/50'}`} title="Toggle breaking">
+                    className={`p-1.5 rounded-xl transition-all duration-300 ${article.is_breaking ? 'text-primary bg-primary/10 shadow-none' : 'text-muted-foreground hover:bg-muted/50'}`} title="Toggle breaking">
                     <Zap className="w-4 h-4" />
                   </button>
                   <button onClick={() => updateArticle(article.id, { is_featured: !article.is_featured })}
-                    className={`p-1.5 rounded-sm transition-all duration-300 ${article.is_featured ? 'text-accent bg-accent/10' : 'text-muted-foreground hover:bg-muted/50'}`} title="Toggle featured">
+                    className={`p-1.5 rounded-xl transition-all duration-300 ${article.is_featured ? 'text-accent bg-accent/10' : 'text-muted-foreground hover:bg-muted/50'}`} title="Toggle featured">
                     <Star className="w-4 h-4" />
                   </button>
                   <button onClick={() => deleteArticle(article.id)}
-                    className="p-1.5 rounded-sm hover:bg-destructive/20 text-destructive transition-all duration-300" title="Delete">
+                    className="p-1.5 rounded-xl hover:bg-destructive/20 text-destructive transition-all duration-300" title="Delete">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
