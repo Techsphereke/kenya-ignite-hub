@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index.tsx";
 import MobileBottomNav from "./components/MobileBottomNav";
+import SiteLoader from "./components/SiteLoader";
 
 const ArticlePage = lazy(() => import("./pages/ArticlePage.tsx"));
 const SearchPage = lazy(() => import("./pages/SearchPage.tsx"));
@@ -22,12 +23,6 @@ const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 const queryClient = new QueryClient();
 
-const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background">
-    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-  </div>
-);
-
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -36,7 +31,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Suspense fallback={<PageLoader />}>
+            <Suspense fallback={<SiteLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/article/:slug" element={<ArticlePage />} />
