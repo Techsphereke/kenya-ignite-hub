@@ -1,66 +1,6 @@
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, Grid3X3, User, Flame } from 'lucide-react';
+import { Link,useLocation } from 'react-router-dom';
+import { Home,Search,Grid3X3,User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
-
-const MobileBottomNav = () => {
-  const location = useLocation();
-  const { user } = useAuth();
-
-  const navItems = [
-    { to: '/', icon: Home, label: 'Home' },
-    { to: '/search', icon: Search, label: 'Search' },
-    { to: '/search?explore=1', icon: Grid3X3, label: 'Explore' },
-    { to: user ? '/dashboard' : '/auth', icon: User, label: user ? 'Profile' : 'Sign in' },
-  ];
-
-  const isActive = (path: string) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
-
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-      {/* Frosted glass background */}
-      <div className="absolute inset-0 bg-card/90 backdrop-blur-xl border-t border-border/40" />
-      
-      {/* Safe area padding for notched phones */}
-      <div className="relative flex items-center justify-around px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const active = isActive(item.to);
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors duration-200"
-            >
-              {active && (
-                <motion.div
-                  layoutId="bottomnav-indicator"
-                  className="absolute -top-1 w-5 h-0.5 rounded-full bg-primary"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-              <Icon
-                className={`w-5 h-5 transition-colors duration-200 ${
-                  active ? 'text-primary' : 'text-muted-foreground'
-                }`}
-                strokeWidth={active ? 2.2 : 1.8}
-              />
-              <span
-                className={`text-[10px] font-body font-medium transition-colors duration-200 ${
-                  active ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
-  );
-};
-
+const MobileBottomNav=()=>{const l=useLocation();if(l.pathname.startsWith('/admin'))return null;const {user}=useAuth();const items=[{to:'/',icon:Home,label:'Home'},{to:'/search',icon:Search,label:'Search'},{to:'/search?explore=1',icon:Grid3X3,label:'Explore'},{to:user?'/dashboard':'/auth',icon:User,label:user?'Profile':'Sign in'}];const active=(to:string)=>to==='/'?l.pathname==='/':l.pathname===to.split('?')[0];return <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-foreground text-background border-t-4 border-primary"><div className="flex justify-around px-1 pt-1.5 pb-[max(.45rem,env(safe-area-inset-bottom))]">{items.map(item=>{const Icon=item.icon;const on=active(item.to);return <Link key={item.to} to={item.to} className="relative min-w-16 flex flex-col items-center gap-0.5 py-1.5">{on&&<motion.i layoutId="mobile-nav" className="absolute -top-1.5 h-1 w-10 bg-accent"/>}<Icon className={`w-5 h-5 ${on?'text-accent':'text-background/55'}`}/><span className={`font-mono text-[8px] uppercase ${on?'text-background':'text-background/55'}`}>{item.label}</span></Link>})}</div></nav>};
 export default MobileBottomNav;

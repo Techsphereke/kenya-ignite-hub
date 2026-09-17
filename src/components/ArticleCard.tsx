@@ -1,115 +1,14 @@
 import { Link } from 'react-router-dom';
-import { Clock, Eye } from 'lucide-react';
-import { DbArticle, timeAgo } from '@/hooks/use-articles';
-
-const formatViews = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : `${n}`;
+import { Clock, Eye, ArrowUpRight } from 'lucide-react';
+import { DbArticle,timeAgo } from '@/hooks/use-articles';
 import { motion } from 'framer-motion';
-
-interface ArticleCardProps {
-  article: DbArticle;
-  variant?: 'default' | 'featured' | 'compact' | 'horizontal';
-}
-
-const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) => {
-  if (variant === 'compact') {
-    return (
-      <Link to={`/article/${article.slug}`} className="flex gap-3 group py-3 border-b border-border/30 last:border-0">
-        {article.cover_image && <img src={article.cover_image} alt={article.title} className="w-20 h-20 rounded-lg object-cover flex-shrink-0 transition-transform duration-500 group-hover:scale-105" loading="lazy" />}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-display font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-300">
-            {article.title}
-          </h3>
-          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground font-body">
-            <span>{timeAgo(article.published_at)}</span>
-            <span className="text-primary/40">·</span>
-            <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{formatViews(article.views || 0)}</span>
-          </div>
-        </div>
-      </Link>
-    );
-  }
-
-  if (variant === 'horizontal') {
-    return (
-      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-        <Link to={`/article/${article.slug}`} className="flex gap-4 group glass-card rounded-xl p-3 hover:glow-border transition-all duration-500">
-          {article.cover_image && (
-            <div className="overflow-hidden rounded-lg flex-shrink-0">
-              <img src={article.cover_image} alt={article.title} className="w-32 h-24 md:w-48 md:h-32 object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
-            </div>
-          )}
-          <div className="flex-1 min-w-0 py-1">
-            {article.category_name && <span className="text-xs font-body font-semibold text-primary uppercase tracking-wider">{article.category_name}</span>}
-            <h3 className="text-base md:text-lg font-display font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-300 mt-0.5">
-              {article.title}
-            </h3>
-            <p className="text-sm text-muted-foreground font-body line-clamp-2 mt-1 hidden md:block">{article.excerpt}</p>
-            <div className="flex items-center gap-2 mt-1.5 text-xs text-muted-foreground font-body">
-              <span>{article.author_name}</span>
-              <span className="text-primary/40">·</span>
-              <span>{timeAgo(article.published_at)}</span>
-              <span className="text-primary/40">·</span>
-              <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{formatViews(article.views || 0)}</span>
-            </div>
-          </div>
-        </Link>
-      </motion.div>
-    );
-  }
-
-  if (variant === 'featured') {
-    return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-        <Link to={`/article/${article.slug}`} className="group relative block rounded-xl overflow-hidden glow-border">
-          <img src={article.cover_image || '/placeholder.svg'} alt={article.title} className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
-            {article.category_name && <span className="text-xs font-body font-semibold text-primary-foreground/90 uppercase tracking-wider">{article.category_name}</span>}
-            <h2 className="text-lg md:text-2xl font-display font-bold text-white leading-tight mt-1 group-hover:text-primary-foreground transition-colors duration-300">
-              {article.title}
-            </h2>
-            <p className="text-sm text-white/70 font-body mt-1.5 line-clamp-2 hidden md:block">{article.excerpt}</p>
-            <div className="flex items-center gap-2 mt-2 text-xs text-white/60 font-body">
-              <span>{article.author_name}</span>
-              <span className="text-white/30">·</span>
-              <Clock className="w-3 h-3" />
-              <span>{article.reading_time} min read</span>
-              <span className="text-white/30">·</span>
-              <Eye className="w-3 h-3" />
-              <span>{formatViews(article.views || 0)}</span>
-            </div>
-          </div>
-        </Link>
-      </motion.div>
-    );
-  }
-
-  // Default card
-  return (
-    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-      <Link to={`/article/${article.slug}`} className="group block">
-        <div className="rounded-xl overflow-hidden glass-card hover:glow-border transition-all duration-500 hover:-translate-y-1">
-          <div className="overflow-hidden">
-            <img src={article.cover_image || '/placeholder.svg'} alt={article.title} className="w-full h-44 object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
-          </div>
-          <div className="p-4">
-            {article.category_name && <span className="text-xs font-body font-semibold text-primary uppercase tracking-wider">{article.category_name}</span>}
-            <h3 className="text-base font-display font-bold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors duration-300 mt-0.5">
-              {article.title}
-            </h3>
-            <p className="text-sm text-muted-foreground font-body line-clamp-2 mt-1">{article.excerpt}</p>
-            <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground font-body">
-              <span>{article.author_name}</span>
-              <span className="text-primary/40">·</span>
-              <span>{timeAgo(article.published_at)}</span>
-              <span className="text-primary/40">·</span>
-              <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{formatViews(article.views || 0)}</span>
-            </div>
-          </div>
-        </div>
-      </Link>
-    </motion.div>
-  );
+const formatViews=(n:number)=>n>=1000?`${(n/1000).toFixed(1)}k`:`${n}`;
+interface Props{article:DbArticle;variant?:'default'|'featured'|'compact'|'horizontal'}
+const Meta=({article,light=false}:{article:DbArticle;light?:boolean})=><div className={`flex flex-wrap items-center gap-2 font-mono text-[9px] uppercase ${light?'text-background/70':'text-muted-foreground'}`}><span>{article.author_name}</span><span>•</span><span>{timeAgo(article.published_at)}</span><span>•</span><span className="flex items-center gap-1"><Eye className="w-3 h-3"/>{formatViews(article.views||0)}</span></div>;
+const ArticleCard=({article,variant='default'}:Props)=>{
+ if(variant==='compact')return <Link to={`/article/${article.slug}`} className="group grid grid-cols-[2.25rem_1fr] gap-3 py-4 border-b border-foreground/15"><span className="font-display text-3xl text-primary/25 leading-none group-hover:text-primary transition-colors">›</span><div><h3 className="font-display text-sm leading-tight group-hover:text-primary transition-colors line-clamp-2">{article.title}</h3><div className="mt-2"><Meta article={article}/></div></div></Link>;
+ if(variant==='horizontal')return <motion.article initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}}><Link to={`/article/${article.slug}`} className="group grid grid-cols-[7.5rem_1fr] md:grid-cols-[13rem_1fr] gap-4 md:gap-6 py-5 border-t border-foreground/20"><div className="overflow-hidden aspect-[4/3]"><img src={article.cover_image||'/placeholder.svg'} alt={article.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"/></div><div className="flex flex-col justify-between py-1"><div><span className="font-mono text-[9px] font-bold uppercase text-primary tracking-widest">{article.category_name||'News'}</span><h3 className="font-display text-base md:text-xl leading-tight mt-1 group-hover:text-primary transition-colors line-clamp-2">{article.title}</h3><p className="hidden md:block text-sm text-muted-foreground mt-2 line-clamp-2">{article.excerpt}</p></div><Meta article={article}/></div></Link></motion.article>;
+ if(variant==='featured')return <motion.article initial={{opacity:0}} animate={{opacity:1}} className="group"><Link to={`/article/${article.slug}`} className="block"><div className="relative overflow-hidden aspect-[4/5] md:aspect-[4/5] lg:aspect-[5/6] image-reveal"><img src={article.cover_image||'/placeholder.svg'} alt={article.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"/><span className="absolute top-4 left-4 bg-foreground text-background px-3 py-1 font-mono text-[9px] uppercase tracking-widest">Lead story</span></div><div className="pt-5"><span className="font-mono text-[10px] font-bold uppercase text-primary tracking-widest">{article.category_name||'Top story'}</span><h2 className="font-display text-2xl md:text-4xl leading-[1.03] mt-2 group-hover:text-primary transition-colors">{article.title}</h2><p className="text-base text-muted-foreground leading-relaxed mt-3 line-clamp-2">{article.excerpt}</p><div className="mt-4"><Meta article={article}/></div></div></Link></motion.article>;
+ return <motion.article initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} className="group border-t-2 border-foreground pt-3"><Link to={`/article/${article.slug}`}><div className="overflow-hidden aspect-[4/3]"><img src={article.cover_image||'/placeholder.svg'} alt={article.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"/></div><div className="pt-4"><div className="flex justify-between gap-3"><span className="font-mono text-[9px] font-bold uppercase text-primary tracking-widest">{article.category_name||'News'}</span><ArrowUpRight className="w-4 h-4 group-hover:text-primary"/></div><h3 className="font-display text-lg leading-tight mt-2 group-hover:text-primary transition-colors line-clamp-2">{article.title}</h3><p className="text-sm text-muted-foreground mt-2 line-clamp-2">{article.excerpt}</p><div className="mt-3"><Meta article={article}/></div></div></Link></motion.article>;
 };
-
 export default ArticleCard;
