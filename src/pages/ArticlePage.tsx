@@ -140,7 +140,7 @@ const ArticlePage = () => {
   if (isLoading) {
 
   return (
-    <div className="min-h-screen bg-background animated-bg noise-overlay">
+    <div className="min-h-screen bg-background editorial-shell">
       <SiteHeader />
         <div className="container py-20 text-center font-body text-muted-foreground">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
@@ -152,7 +152,7 @@ const ArticlePage = () => {
 
   if (!article) {
     return (
-      <div className="min-h-screen bg-background animated-bg noise-overlay">
+      <div className="min-h-screen bg-background editorial-shell">
         <SiteHeader />
         <div className="container py-20 text-center">
           <h1 className="text-2xl font-display font-bold text-foreground">Article not found</h1>
@@ -164,7 +164,7 @@ const ArticlePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background animated-bg noise-overlay pb-20 md:pb-0">
+    <div className="min-h-screen bg-background editorial-shell pb-20 md:pb-0">
       <Helmet>
         <title>{`${article.title} — Kenya Ignite`}</title>
         <meta name="description" content={article.excerpt || 'Read more on Kenya Ignite'} />
@@ -182,16 +182,16 @@ const ArticlePage = () => {
       </Helmet>
       <SiteHeader />
 
-      <article className="container max-w-3xl py-6 md:py-10 relative z-10">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground font-body hover:text-primary transition-colors duration-300 mb-4">
+      <article className="container max-w-5xl py-8 md:py-14 relative z-10">
+        <Link to="/" className="inline-flex items-center gap-2 font-mono text-[10px] uppercase text-muted-foreground hover:text-primary mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          {article.category_name && <span className="text-xs font-body font-bold text-primary uppercase tracking-wider">{article.category_name}</span>}
-          <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground leading-tight mt-1">{article.title}</h1>
+          {article.category_name && <span className="font-mono text-[10px] font-bold text-primary uppercase tracking-widest">{article.category_name}</span>}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-display text-foreground leading-[1.02] mt-3 max-w-4xl headline-reveal">{article.title}</h1>
 
-          <div className="flex flex-wrap items-center gap-3 mt-4 text-sm text-muted-foreground font-body">
+          <div className="flex flex-wrap items-center gap-3 mt-6 pt-4 border-t border-foreground text-xs text-muted-foreground font-mono uppercase">
             <span className="font-medium text-foreground">{article.author_name}</span>
             <span className="text-primary/30">·</span>
             <span>{formatDate(article.published_at)}</span>
@@ -204,22 +204,22 @@ const ArticlePage = () => {
 
         {article.cover_image && (
           <motion.img initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.2 }}
-            src={article.cover_image} alt={article.title} className="w-full rounded-xl mt-6 object-cover max-h-[450px] glow-border" />
+            src={article.cover_image} alt={article.title} className="w-full mt-8 object-cover max-h-[640px] border-y-4 border-foreground image-reveal" />
         )}
 
         {/* Share buttons */}
-        <div className="flex items-center gap-3 mt-6 pb-4 border-b border-border/30">
+        <div className="flex items-center gap-2 mt-6 pb-5 border-b border-foreground/20">
           <Share2 className="w-4 h-4 text-muted-foreground" />
           <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer"
-            className="p-2 rounded-lg bg-muted/50 hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-[0_0_15px_hsl(var(--primary)/0.3)]">
+            className="p-2 border border-foreground/30 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors">
             <Facebook className="w-4 h-4" />
           </a>
           <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`} target="_blank" rel="noopener noreferrer"
-            className="p-2 rounded-lg bg-muted/50 hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-[0_0_15px_hsl(var(--primary)/0.3)]">
+            className="p-2 border border-foreground/30 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors">
             <Twitter className="w-4 h-4" />
           </a>
           <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(article.title + '\n\n' + shareUrl)}`} target="_blank" rel="noopener noreferrer"
-            className="p-2 rounded-lg bg-muted/50 hover:bg-[#25D366] hover:text-white transition-all duration-300 hover:shadow-[0_0_15px_rgba(37,211,102,0.3)]">
+            className="p-2 border border-foreground/30 hover:bg-secondary hover:text-secondary-foreground hover:border-secondary transition-colors">
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           </a>
           <button onClick={() => {
@@ -229,7 +229,7 @@ const ArticlePage = () => {
               setTimeout(() => setCopied(false), 2000);
             });
           }}
-            className="p-2 rounded-lg bg-muted/50 hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-[0_0_15px_hsl(var(--primary)/0.3)]"
+            className="p-2 border border-foreground/30 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
             aria-label="Copy link">
             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
           </button>
@@ -238,26 +238,26 @@ const ArticlePage = () => {
         {/* Audio Reader */}
         {tts.supported && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }}
-            className="mt-4 glass-card rounded-xl p-4 glow-border">
+            className="mt-6 bg-card border-y-2 border-foreground p-4">
             <div className="flex items-center gap-3">
               <Volume2 className="w-5 h-5 text-primary flex-shrink-0" />
               <span className="text-sm font-body font-semibold text-foreground">Listen to this article</span>
               <div className="flex items-center gap-1.5 ml-auto">
                 {!tts.isPlaying ? (
                   <button onClick={tts.play}
-                    className="p-2 rounded-lg bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300"
+                    className="p-2 bg-primary text-primary-foreground border border-primary hover:bg-foreground hover:border-foreground transition-colors"
                     aria-label="Play article">
                     <Play className="w-4 h-4" />
                   </button>
                 ) : (
                   <>
                     <button onClick={tts.isPaused ? tts.resume : tts.pause}
-                      className="p-2 rounded-lg bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300"
+                      className="p-2 bg-primary text-primary-foreground border border-primary hover:bg-foreground hover:border-foreground transition-colors"
                       aria-label={tts.isPaused ? 'Resume' : 'Pause'}>
                       {tts.isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
                     </button>
                     <button onClick={tts.stop}
-                      className="p-2 rounded-lg bg-muted/50 text-muted-foreground hover:bg-destructive hover:text-destructive-foreground transition-all duration-300"
+                      className="p-2 border border-foreground/30 text-muted-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors"
                       aria-label="Stop">
                       <Square className="w-4 h-4" />
                     </button>
@@ -274,7 +274,7 @@ const ArticlePage = () => {
                   <select
                     value={tts.selectedVoiceIndex}
                     onChange={(e) => { tts.setSelectedVoiceIndex(Number(e.target.value)); if (tts.isPlaying) { tts.stop(); } }}
-                    className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-border/50 text-foreground font-body text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none pr-8"
+                    className="w-full px-3 py-2 rounded-sm bg-background border border-foreground/30 text-foreground font-body text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none pr-8"
                   >
                     {tts.voices.map((v, i) => (
                       <option key={`${v.name}-${i}`} value={i}>
@@ -290,7 +290,7 @@ const ArticlePage = () => {
                 <div className="flex items-center gap-1.5">
                   {[0.75, 1, 1.25, 1.5].map(s => (
                     <button key={s} onClick={() => { tts.setRate(s); if (tts.isPlaying) { tts.stop(); } }}
-                      className={`flex-1 px-1.5 py-1.5 rounded-md text-xs font-body font-medium transition-all duration-200 ${
+                      className={`flex-1 px-1.5 py-1.5 rounded-sm text-xs font-body font-medium transition-all duration-200 ${
                         tts.rate === s
                           ? 'bg-primary text-primary-foreground shadow-[0_0_10px_hsl(var(--primary)/0.3)]'
                           : 'bg-muted/50 text-muted-foreground hover:bg-muted'
@@ -304,9 +304,9 @@ const ArticlePage = () => {
 
             {tts.isPlaying && (
               <div className="mt-3">
-                <div className="w-full h-1.5 bg-muted/50 rounded-full overflow-hidden">
+                <div className="w-full h-1 bg-muted overflow-hidden">
                   <motion.div
-                    className="h-full bg-primary rounded-full"
+                    className="h-full bg-primary"
                     initial={{ width: 0 }}
                     animate={{ width: `${tts.progress}%` }}
                     transition={{ duration: 0.3 }}
@@ -322,7 +322,7 @@ const ArticlePage = () => {
 
         {/* Content */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}
-          className="prose prose-lg max-w-none mt-6 font-body text-foreground/90 leading-relaxed
+          className="prose prose-lg max-w-3xl mx-auto mt-14 font-body text-foreground/90 leading-relaxed
           [&_h2]:font-display [&_h2]:text-foreground [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-3
           [&_p]:mb-4 [&_p]:text-base"
           dangerouslySetInnerHTML={{ __html: article.content }}
@@ -333,7 +333,7 @@ const ArticlePage = () => {
           <div className="flex flex-wrap gap-2 mt-8">
             {article.tags.map(tag => (
               <Link key={tag} to={`/search?q=${encodeURIComponent(tag)}`}
-                className="px-3 py-1 rounded-full bg-muted/50 text-xs font-body font-medium text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-[0_0_10px_hsl(var(--primary)/0.3)]">
+                className="px-3 py-1 border border-foreground/30 text-xs font-body font-medium text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-[0_0_10px_hsl(var(--primary)/0.3)]">
                 #{tag}
               </Link>
             ))}
@@ -341,21 +341,21 @@ const ArticlePage = () => {
         )}
 
         {/* Comments */}
-        <section className="mt-10">
+        <section className="mt-14">
           <h2 className="text-lg font-display font-bold text-foreground flex items-center gap-2">
             <MessageCircle className="w-5 h-5 text-primary" />
             Comments ({(comments || []).length})
           </h2>
 
-          <form onSubmit={handleComment} className="mt-4 space-y-3 p-4 glass-card rounded-xl">
+          <form onSubmit={handleComment} className="mt-5 space-y-3 p-5 bg-card border-2 border-foreground">
             <input type="text" placeholder="Your name" value={commentName} onChange={e => setCommentName(e.target.value)}
               required maxLength={100}
-              className="w-full px-3 py-2.5 rounded-lg bg-muted/50 border border-border/50 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" />
+              className="w-full px-3 py-2.5 rounded-sm bg-background border border-foreground/30 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" />
             <textarea placeholder="Write a comment..." value={commentText} onChange={e => setCommentText(e.target.value)}
               required rows={3} maxLength={1000}
-              className="w-full px-3 py-2.5 rounded-lg bg-muted/50 border border-border/50 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none" />
+              className="w-full px-3 py-2.5 rounded-sm bg-background border border-foreground/30 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none" />
             <button type="submit" disabled={submitting}
-              className="px-5 py-2.5 bg-primary text-primary-foreground rounded-lg font-body text-sm font-medium hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300 disabled:opacity-50">
+              className="px-5 py-2.5 bg-primary text-primary-foreground font-mono text-xs font-bold uppercase hover:bg-foreground transition-colors disabled:opacity-50">
               {submitting ? 'Posting...' : 'Post Comment'}
             </button>
           </form>
@@ -370,8 +370,8 @@ const ArticlePage = () => {
 
       {/* Related articles */}
       {related.length > 0 && (
-        <section className="container max-w-3xl mb-10 relative z-10">
-          <h2 className="text-lg font-display font-bold text-foreground mb-4">Related Stories</h2>
+        <section className="container max-w-5xl mb-14 relative z-10">
+          <h2 className="section-kicker mb-6">Related Stories</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {related.map(a => <ArticleCard key={a.id} article={a} />)}
           </div>
