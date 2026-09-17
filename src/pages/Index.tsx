@@ -2,115 +2,19 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import BreakingNewsTicker from '@/components/BreakingNewsTicker';
 import ArticleCard from '@/components/ArticleCard';
-import { useFeaturedArticles, useLatestArticles, useTrendingArticles, useCategories, useArticlesByCategory } from '@/hooks/use-articles';
-import { TrendingUp, ChevronRight } from 'lucide-react';
+import { useFeaturedArticles,useLatestArticles,useTrendingArticles,useCategories,useArticlesByCategory } from '@/hooks/use-articles';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const CategorySection = ({ categoryId, categoryName, categorySlug }: { categoryId: string; categoryName: string; categorySlug: string }) => {
-  const { data: articles } = useArticlesByCategory(categoryId);
-  if (!articles || articles.length === 0) return null;
-
-  return (
-    <section className="container mt-12">
-      <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-        className="flex items-center justify-between mb-5">
-        <h2 className="text-xl font-display font-bold text-foreground flex items-center gap-2">
-          <span className="w-1 h-6 bg-gradient-to-b from-primary to-accent rounded-full" />
-          {categoryName}
-        </h2>
-        <Link to={`/category/${categorySlug}`} className="text-sm font-body font-medium text-primary hover:text-accent transition-colors duration-300 flex items-center gap-0.5 animated-underline">
-          View all <ChevronRight className="w-4 h-4" />
-        </Link>
-      </motion.div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {articles.slice(0, 3).map(a => (
-          <ArticleCard key={a.id} article={a} />
-        ))}
-      </div>
-    </section>
-  );
-};
-
-const Index = () => {
-  const { data: featured } = useFeaturedArticles();
-  const { data: latest } = useLatestArticles(8);
-  const { data: trending } = useTrendingArticles();
-  const { data: categories } = useCategories();
-
-  return (
-    <div className="min-h-screen bg-background animated-bg noise-overlay pb-20 md:pb-0">
-      <SiteHeader />
-      <BreakingNewsTicker />
-
-      <main className="relative z-10">
-        {/* Featured Stories */}
-        {featured && featured.length > 0 && (
-          <section className="container mt-6 md:mt-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {featured[0] && <ArticleCard article={featured[0]} variant="featured" />}
-              <div className="grid grid-cols-1 gap-4">
-                {featured.slice(1, 3).map(a => (
-                  <ArticleCard key={a.id} article={a} variant="featured" />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Latest + Trending sidebar */}
-        <section className="container mt-10 md:mt-14">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <motion.h2 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                className="text-xl font-display font-bold text-foreground mb-5 flex items-center gap-2">
-                <span className="w-1 h-6 bg-gradient-to-b from-primary to-accent rounded-full" />
-                Latest News
-              </motion.h2>
-              {latest && latest.length > 0 ? (
-                <div className="space-y-4">
-                  {latest.map(a => (
-                    <ArticleCard key={a.id} article={a} variant="horizontal" />
-                  ))}
-                </div>
-              ) : (
-                <div className="glass-card rounded-xl p-12 text-center">
-                  <p className="text-muted-foreground font-body">No published articles yet. Check back soon!</p>
-                </div>
-              )}
-            </div>
-
-            <aside>
-              <motion.h2 initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                className="text-xl font-display font-bold text-foreground mb-5 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-primary" />
-                Trending
-              </motion.h2>
-              <div className="glass-card rounded-xl p-4 shimmer">
-                {trending && trending.length > 0 ? (
-                  trending.map((a, i) => (
-                    <div key={a.id} className="flex gap-3 py-3 border-b border-border/30 last:border-0">
-                      <span className="text-2xl font-display font-bold gradient-text opacity-60">{String(i + 1).padStart(2, '0')}</span>
-                      <ArticleCard article={a} variant="compact" />
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-muted-foreground font-body py-4 text-center">No trending articles yet</p>
-                )}
-              </div>
-            </aside>
-          </div>
-        </section>
-
-        {/* Category sections */}
-        {(categories || []).slice(0, 4).map(cat => (
-          <CategorySection key={cat.id} categoryId={cat.id} categoryName={cat.name} categorySlug={cat.slug} />
-        ))}
-      </main>
-
-      <SiteFooter />
-    </div>
-  );
-};
-
+const CategorySection=({categoryId,categoryName,categorySlug}:{categoryId:string;categoryName:string;categorySlug:string})=>{const {data:articles}=useArticlesByCategory(categoryId);if(!articles?.length)return null;return <section className="container mt-16 md:mt-24"><div className="section-kicker mb-6"><h2>{categoryName}</h2><Link to={`/category/${categorySlug}`} className="flex items-center gap-1 hover:text-primary">View all <ArrowRight className="w-3 h-3"/></Link></div><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">{articles.slice(0,3).map(a=><ArticleCard key={a.id} article={a}/>)}</div></section>};
+const Index=()=>{const {data:featured}=useFeaturedArticles();const {data:latest}=useLatestArticles(8);const {data:trending}=useTrendingArticles();const {data:categories}=useCategories();const lead=featured?.[0]||latest?.[0];const briefs=(latest||[]).filter(a=>a.id!==lead?.id).slice(0,4);return <div className="min-h-screen editorial-shell pb-20 md:pb-0"><SiteHeader/><BreakingNewsTicker/><main className="relative z-10">
+  <section className="container py-7 md:py-12"><div className="grid grid-cols-1 lg:grid-cols-12 gap-9 lg:gap-8">
+    <aside className="order-2 lg:order-1 lg:col-span-3"><div className="section-kicker mb-1"><span>The latest</span><span>EAT</span></div>{briefs.map(a=><ArticleCard key={a.id} article={a} variant="compact"/>)}</aside>
+    <div className="order-1 lg:order-2 lg:col-span-6 lg:px-3">{lead?<ArticleCard article={lead} variant="featured"/>:<div className="aspect-[4/5] border border-foreground flex items-center justify-center font-mono text-xs uppercase">Stories are being prepared</div>}</div>
+    <aside className="order-3 lg:col-span-3"><div className="section-kicker mb-1"><span>Trending</span><span>Now</span></div>{(trending||[]).slice(0,5).map((a,i)=><Link key={a.id} to={`/article/${a.slug}`} className="group grid grid-cols-[3rem_1fr] gap-3 py-4 border-b border-foreground/15"><span className="font-display text-4xl leading-none text-primary/25 group-hover:text-primary transition-colors">{String(i+1).padStart(2,'0')}</span><div><h3 className="font-display text-sm leading-tight group-hover:text-primary transition-colors line-clamp-2">{a.title}</h3><span className="font-mono text-[9px] uppercase text-muted-foreground mt-2 block">{a.category_name||'News'} • {a.views||0} views</span></div></Link>)}</aside>
+  </div></section>
+  <motion.section initial={{scaleX:0}} whileInView={{scaleX:1}} viewport={{once:true}} className="origin-left h-2 bg-gradient-to-r from-kenya-black via-kenya-red to-kenya-green mt-8"/>
+  {(categories||[]).slice(0,4).map(c=><CategorySection key={c.id} categoryId={c.id} categoryName={c.name} categorySlug={c.slug}/>) }
+</main><SiteFooter/></div>};
 export default Index;
