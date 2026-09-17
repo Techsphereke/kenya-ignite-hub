@@ -114,7 +114,14 @@ const AdminArticles = () => {
                       <Clock className="w-3 h-3" /> {new Date(article.created_at).toLocaleDateString()}
                     </span>
                   </div>
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    <label className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted-foreground">Publish date</label>
+                    <input type="datetime-local" defaultValue={toLocalInput(article.published_at)}
+                      onChange={e => updateArticle(article.id, { published_at: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                      className="rounded-lg bg-background border border-border px-2 py-1 text-xs focus:outline-none focus:border-accent" />
+                  </div>
                 </div>
+
 
                 <div className="flex flex-col gap-1 flex-shrink-0">
                   {article.status !== 'approved' && (
