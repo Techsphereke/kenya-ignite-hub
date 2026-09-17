@@ -35,11 +35,13 @@ const Dashboard = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    if (user) { fetchArticles(); fetchCategories(); }
+    if (user) { fetchArticles(user.id); fetchCategories(); }
   }, [user]);
 
-  const fetchArticles = async () => {
-    const { data } = await supabase.from('articles').select('*').eq('author_id', user!.id).order('created_at', { ascending: false });
+  const fetchArticles = async (userId?: string) => {
+    const authorId = userId || user?.id;
+    if (!authorId) return;
+    const { data } = await supabase.from('articles').select('*').eq('author_id', authorId).order('created_at', { ascending: false });
     setArticles(data || []);
     setLoading(false);
   };
@@ -91,7 +93,7 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-background animated-bg noise-overlay">
         <SiteHeader />
-        <div className="container py-20 flex justify-center"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>
+        <div className="container py-20 flex justify-center"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-sm animate-spin" /></div>
       </div>
     );
   }
@@ -115,20 +117,20 @@ const Dashboard = () => {
               <input type="text" placeholder="Article title"
                 value={editingArticle?.title || ''}
                 onChange={e => setEditingArticle(prev => ({ ...prev, title: e.target.value }))}
-                className="w-full px-4 py-3 rounded-xl glass-card text-foreground font-display text-lg font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" />
+                className="w-full px-4 py-3 rounded-sm bg-card border border-foreground/20 text-foreground font-display text-lg font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" />
 
               <textarea placeholder="Short excerpt (1-2 sentences)"
                 value={editingArticle?.excerpt || ''}
                 onChange={e => setEditingArticle(prev => ({ ...prev, excerpt: e.target.value }))}
                 rows={2}
-                className="w-full px-4 py-2.5 rounded-xl glass-card text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none" />
+                className="w-full px-4 py-2.5 rounded-sm bg-card border border-foreground/20 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none" />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-body font-medium text-foreground block mb-1">Category</label>
                   <select value={editingArticle?.category_id || ''}
                     onChange={e => setEditingArticle(prev => ({ ...prev, category_id: e.target.value || null }))}
-                    className="w-full px-3 py-2.5 rounded-xl glass-card text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                    className="w-full px-3 py-2.5 rounded-sm bg-card border border-foreground/20 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
                     <option value="">Select category</option>
                     {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
@@ -138,14 +140,14 @@ const Dashboard = () => {
                   <input type="text"
                     value={(editingArticle?.tags || []).join(', ')}
                     onChange={e => setEditingArticle(prev => ({ ...prev, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) }))}
-                    className="w-full px-3 py-2.5 rounded-xl glass-card text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" />
+                    className="w-full px-3 py-2.5 rounded-sm bg-card border border-foreground/20 text-foreground font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all" />
                 </div>
               </div>
 
               <div>
                 <label className="text-sm font-body font-medium text-foreground block mb-1">Cover Image</label>
                 {editingArticle?.cover_image && (
-                  <img src={editingArticle.cover_image} alt="Cover" className="w-full h-48 object-cover rounded-xl mb-2 glow-border" />
+                  <img src={editingArticle.cover_image} alt="Cover" className="w-full h-48 object-cover rounded-sm mb-2 border-foreground/30" />
                 )}
                 <input type="file" accept="image/*"
                   onChange={e => e.target.files?.[0] && handleCoverUpload(e.target.files[0])}
@@ -159,11 +161,11 @@ const Dashboard = () => {
 
               <div className="flex gap-3 pt-4">
                 <button onClick={() => handleSave('draft')}
-                  className="px-5 py-2.5 glass-card rounded-xl font-body text-sm font-medium text-foreground hover:bg-muted/50 transition-all duration-300">
+                  className="px-5 py-2.5 bg-card border border-foreground/20 rounded-sm font-body text-sm font-medium text-foreground hover:bg-muted/50 transition-all duration-300">
                   Save Draft
                 </button>
                 <button onClick={() => handleSave('approved')}
-                  className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-body text-sm font-medium hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300 flex items-center gap-1.5">
+                  className="px-5 py-2.5 bg-primary text-primary-foreground rounded-sm font-body text-sm font-medium hover:bg-foreground hover:text-background transition-all duration-300 flex items-center gap-1.5">
                   <Send className="w-4 h-4" /> Publish
                 </button>
               </div>
@@ -187,11 +189,11 @@ const Dashboard = () => {
           </div>
           <div className="flex gap-2">
             <button onClick={() => { setEditingArticle({}); setView('editor'); }}
-              className="px-4 py-2.5 bg-primary text-primary-foreground rounded-xl font-body text-sm font-medium hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] transition-all duration-300 flex items-center gap-1.5">
+              className="px-4 py-2.5 bg-primary text-primary-foreground rounded-sm font-body text-sm font-medium hover:bg-foreground hover:text-background transition-all duration-300 flex items-center gap-1.5">
               <Plus className="w-4 h-4" /> New Article
             </button>
             <button onClick={signOut}
-              className="px-4 py-2.5 glass-card rounded-xl font-body text-sm font-medium text-foreground hover:bg-muted/50 transition-all duration-300 flex items-center gap-1.5">
+              className="px-4 py-2.5 bg-card border border-foreground/20 rounded-sm font-body text-sm font-medium text-foreground hover:bg-muted/50 transition-all duration-300 flex items-center gap-1.5">
               <LogOut className="w-4 h-4" /> Sign Out
             </button>
           </div>
@@ -205,7 +207,7 @@ const Dashboard = () => {
             const Icon = cfg.icon;
             return (
               <motion.div key={status} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                className={`glass-card rounded-xl p-4 bg-gradient-to-br ${cfg.gradient} stat-card transition-all duration-500`}>
+                className={`bg-card border border-foreground/20 rounded-sm p-4 bg-card ${cfg.gradient} stat-card transition-all duration-500`}>
                 <div className="flex items-center gap-2 mb-1">
                   <Icon className={`w-4 h-4 ${cfg.text}`} />
                   <span className="text-xs font-body font-medium text-muted-foreground uppercase">{cfg.label}</span>
@@ -219,7 +221,7 @@ const Dashboard = () => {
         {/* Article list */}
         <div className="space-y-3">
           {articles.length === 0 && (
-            <div className="text-center py-16 glass-card rounded-xl">
+            <div className="text-center py-16 bg-card border border-foreground/20 rounded-sm">
               <PenLine className="w-10 h-10 mx-auto text-muted-foreground/40 mb-3" />
               <p className="text-muted-foreground font-body">No articles yet. Start writing!</p>
             </div>
@@ -229,14 +231,14 @@ const Dashboard = () => {
             const Icon = cfg.icon;
             return (
               <motion.div key={article.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                className="glass-card rounded-xl p-4 flex items-start gap-4 hover:glow-border transition-all duration-300">
+                className="bg-card border border-foreground/20 rounded-sm p-4 flex items-start gap-4 hover:border-foreground transition-all duration-300">
                 {article.cover_image && (
-                  <img src={article.cover_image} alt="" className="w-20 h-16 rounded-lg object-cover flex-shrink-0 hidden sm:block" />
+                  <img src={article.cover_image} alt="" className="w-20 h-16 rounded-sm object-cover flex-shrink-0 hidden sm:block" />
                 )}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-display font-semibold text-foreground line-clamp-2">{article.title}</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-body font-medium ${cfg.text} bg-current/10`}
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-body font-medium ${cfg.text} bg-current/10`}
                       style={{ backgroundColor: 'transparent' }}>
                       <Icon className="w-3 h-3" /> {cfg.label}
                     </span>
@@ -247,16 +249,16 @@ const Dashboard = () => {
                 </div>
                 <div className="flex gap-1 flex-shrink-0">
                   {article.status === 'approved' && (
-                    <Link to={`/article/${article.slug}`} className="p-2 rounded-lg hover:bg-muted/50 transition-all duration-300 text-muted-foreground hover:text-foreground">
+                    <Link to={`/article/${article.slug}`} className="p-2 rounded-sm hover:bg-muted/50 transition-all duration-300 text-muted-foreground hover:text-foreground">
                       <Eye className="w-4 h-4" />
                     </Link>
                   )}
                   <button onClick={() => { setEditingArticle(article); setView('editor'); }}
-                    className="p-2 rounded-lg hover:bg-muted/50 transition-all duration-300 text-muted-foreground hover:text-foreground">
+                    className="p-2 rounded-sm hover:bg-muted/50 transition-all duration-300 text-muted-foreground hover:text-foreground">
                     <Edit className="w-4 h-4" />
                   </button>
                   <button onClick={() => handleDelete(article.id)}
-                    className="p-2 rounded-lg hover:bg-destructive/20 transition-all duration-300 text-destructive">
+                    className="p-2 rounded-sm hover:bg-destructive/20 transition-all duration-300 text-destructive">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
