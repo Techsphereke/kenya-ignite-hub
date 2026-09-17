@@ -36,7 +36,7 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-9 lg:gap-10 items-start">
             <div className="lg:col-span-8 relative">
               {lead ? <ArticleCard article={lead} variant="featured" /> : <div className="aspect-[16/10] rounded-2xl bg-muted grid place-items-center text-xs font-extrabold uppercase tracking-[0.2em] text-muted-foreground">Stories are being prepared</div>}
-              <RotatingBadge className="hidden lg:block absolute -bottom-10 -right-6 h-28 w-28" />
+              <RotatingBadge className="hidden lg:block absolute top-5 right-5 h-24 w-24 text-primary-foreground" />
             </div>
             <aside className="lg:col-span-4">
               <div className="section-kicker mb-2"><span>The latest</span><span className="text-accent">Juba</span></div>
