@@ -155,6 +155,23 @@ const Dashboard = () => {
               </div>
 
               <div>
+                <label className="text-sm font-medium text-foreground block mb-1">Publish date &amp; time</label>
+                <div className="flex flex-wrap items-center gap-2">
+                  <input type="datetime-local"
+                    value={toLocalInput(editingArticle?.published_at)}
+                    onChange={e => setEditingArticle(prev => ({ ...prev, published_at: e.target.value ? new Date(e.target.value).toISOString() : null }))}
+                    className="px-3 py-2.5 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all" />
+                  {editingArticle?.published_at && (
+                    <button type="button" onClick={() => setEditingArticle(prev => ({ ...prev, published_at: null }))}
+                      className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-muted-foreground hover:text-destructive">Clear</button>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Leave empty to use the moment you publish. Set a past date to backdate the story.</p>
+              </div>
+
+
+
+              <div>
                 <label className="text-sm font-body font-medium text-foreground block mb-1">Cover Image</label>
                 {editingArticle?.cover_image && (
                   <img src={editingArticle.cover_image} alt="Cover" className="w-full h-48 object-cover rounded-xl mb-2 border-foreground/30" />
