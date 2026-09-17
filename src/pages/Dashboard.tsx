@@ -53,13 +53,15 @@ const Dashboard = () => {
 
   const handleSave = async (status: ArticleStatus) => {
     if (!editingArticle || !user) return;
-    const { title, excerpt, content, cover_image, category_id, tags } = editingArticle;
+    const { title, excerpt, content, cover_image, category_id, tags, published_at } = editingArticle;
     if (!title?.trim()) { toast.error('Title is required'); return; }
+    // Publish date: use the author's chosen date when set (allows backdating), otherwise stamp now.
+    const live = status === 'approved' || status === 'pending';
     const payload = {
       title: title.trim(), slug: '', excerpt: excerpt || '', content: content || '',
       cover_image: cover_image || null, category_id: category_id || null, tags: tags || [],
       author_id: user.id, status,
-      published_at: (status === 'approved' || status === 'pending') ? new Date().toISOString() : null,
+      published_at: published_at ? new Date(published_at).toISOString() : (live ? new Date().toISOString() : null),
     };
     let error;
     if (editingArticle.id) {
@@ -71,6 +73,14 @@ const Dashboard = () => {
     }
     if (error) { toast.error(error.message); }
     else { toast.success(status === 'approved' ? 'Article published!' : 'Article saved!'); setView('list'); setEditingArticle(null); fetchArticles(); }
+  };
+
+  // <input type="datetime-local"> needs a local "YYYY-MM-DDTHH:mm" value, not an ISO string
+  const toLocalInput = (iso?: string | null) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   };
 
   const handleDelete = async (id: string) => {
