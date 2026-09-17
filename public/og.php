@@ -47,7 +47,7 @@ $slug = isset($_GET['slug']) ? preg_replace('/[^a-zA-Z0-9\-_]/', '', $_GET['slug
 $article = null;
 
 if ($slug !== '') {
-  $endpoint = API_BASE . '/rest/v1/articles?select=title,slug,excerpt,content,cover_image,published_at,author_name,category_id'
+  $endpoint = API_BASE . '/rest/v1/articles?select=title,slug,excerpt,content,cover_image,published_at'
     . '&status=eq.approved&slug=eq.' . rawurlencode($slug) . '&limit=1';
   $ctx = stream_context_create([
     'http' => [
@@ -86,7 +86,7 @@ $jsonLd = json_encode([
   'url'      => $articleUrl,
   'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $articleUrl],
   'datePublished' => $article['published_at'] ?? null,
-  'author'   => ['@type' => 'Person', 'name' => $article['author_name'] ?? SITE_NAME],
+  'author'   => ['@type' => 'Person', 'name' => SITE_NAME],
   'publisher' => [
     '@type' => 'Organization',
     'name'  => SITE_NAME,
