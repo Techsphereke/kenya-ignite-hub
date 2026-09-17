@@ -166,18 +166,18 @@ const ArticlePage = () => {
   return (
     <div className="min-h-screen bg-background editorial-shell pb-20 md:pb-0">
       <Helmet>
-        <title>{`${article.title} — Kenya Ignite`}</title>
-        <meta name="description" content={article.excerpt || 'Read more on Kenya Ignite'} />
+        <title>{`${article.title} — Juba Chronicle`}</title>
+        <meta name="description" content={article.excerpt || 'Read more on Juba Chronicle'} />
         <link rel="canonical" href={shareUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:title" content={article.title} />
-        <meta property="og:description" content={article.excerpt || 'Read more on Kenya Ignite'} />
+        <meta property="og:description" content={article.excerpt || 'Read more on Juba Chronicle'} />
         <meta property="og:image" content={article.cover_image || 'https://kenyaignite.co.ke/og-image.png'} />
         <meta property="og:url" content={shareUrl} />
-        <meta property="og:site_name" content="Kenya Ignite" />
+        <meta property="og:site_name" content="Juba Chronicle" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={article.title} />
-        <meta name="twitter:description" content={article.excerpt || 'Read more on Kenya Ignite'} />
+        <meta name="twitter:description" content={article.excerpt || 'Read more on Juba Chronicle'} />
         <meta name="twitter:image" content={article.cover_image || 'https://kenyaignite.co.ke/og-image.png'} />
       </Helmet>
       <SiteHeader />

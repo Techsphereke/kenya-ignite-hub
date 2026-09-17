@@ -1,6 +1,6 @@
 <?php
 /**
- * Kenya Ignite — server-rendered social share metadata for /article/{slug}.
+ * Juba Chronicle — server-rendered social share metadata for /article/{slug}.
  *
  * Social crawlers (WhatsApp, Facebook, Twitter/X, LinkedIn, Telegram) do not run
  * JavaScript, so they are routed here by .htaccess. This file returns real HTML
@@ -9,11 +9,11 @@
  */
 
 const SITE_URL   = 'https://kenyaignite.co.ke';
-const SITE_NAME  = 'Kenya Ignite';
+const SITE_NAME  = 'Juba Chronicle';
 const API_BASE   = 'https://fxnlvjbuyxzjpmlvjfmh.supabase.co';
 const ANON_KEY   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4bmx2amJ1eXh6anBtbHZqZm1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTgxMzcsImV4cCI6MjA5MDAzNDEzN30.57JXv70WATpjAi-c-z6GB5IeIYJrQpYz8_dSSAwq8Ak';
 const FALLBACK_IMAGE = SITE_URL . '/og-image.png';
-const FALLBACK_DESC  = 'Kenya Ignite brings you breaking news, politics, business, technology, sports, and entertainment from Kenya and East Africa.';
+const FALLBACK_DESC  = 'Juba Chronicle brings you breaking news, politics, business, technology, sports, and culture from South Sudan and the region.';
 
 function e(string $v): string {
   return htmlspecialchars($v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -122,7 +122,7 @@ header('X-Robots-Tag: all');
 <meta property="og:locale" content="en_KE" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:site" content="@KenyaIgnite" />
+<meta name="twitter:site" content="@JubaChronicle" />
 <meta name="twitter:title" content="<?= e($title) ?>" />
 <meta name="twitter:description" content="<?= e($desc) ?>" />
 <meta name="twitter:image" content="<?= e($image) ?>" />

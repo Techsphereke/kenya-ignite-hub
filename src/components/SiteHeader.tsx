@@ -6,31 +6,77 @@ import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SiteHeader = () => {
-  const [menuOpen,setMenuOpen]=useState(false); const [searchOpen,setSearchOpen]=useState(false); const [searchQuery,setSearchQuery]=useState('');
-  const navigate=useNavigate(); const {user,roles}=useAuth(); const {data:categories}=useCategories();
-  const isAdmin=roles.includes('admin')||roles.includes('editor');
-  const handleSearch=(e:React.FormEvent)=>{e.preventDefault();if(searchQuery.trim()){navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);setSearchOpen(false);setSearchQuery('')}};
-  return <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-foreground">
-    <div className="container">
-      <div className="hidden md:flex items-center justify-between py-2 border-b border-foreground/15 font-mono text-[10px] uppercase tracking-widest">
-        <span>Nairobi, Kenya // {new Date().toLocaleDateString('en-KE',{day:'2-digit',month:'short',year:'numeric'})}</span>
-        <span className="flex items-center gap-2"><i className="pulse-dot"/>Igniting stories that matter</span>
-      </div>
-      <div className="flex items-center justify-between py-3 md:py-5">
-        <Link to="/" className="group" aria-label="Kenya Ignite home"><span className="block font-display text-2xl sm:text-3xl md:text-5xl uppercase leading-none">Kenya <span className="text-primary">Ignite</span></span><span className="hidden md:block mt-1 font-mono text-[9px] uppercase tracking-[0.28em] text-muted-foreground">Independent Kenyan journalism</span></Link>
-        <div className="flex items-center gap-1">
-          <button onClick={()=>setSearchOpen(v=>!v)} className="p-2.5 border border-transparent hover:border-foreground transition-colors" aria-label="Search"><Search className="w-5 h-5"/></button>
-          {isAdmin&&<Link to="/admin" className="hidden md:grid p-2.5 place-items-center border border-transparent hover:border-foreground text-primary" aria-label="Admin"><Shield className="w-5 h-5"/></Link>}
-          <Link to={user?'/dashboard':'/auth'} className="hidden md:grid p-2.5 place-items-center border border-transparent hover:border-foreground" aria-label={user?'Dashboard':'Sign in'}><User className="w-5 h-5"/></Link>
-          <button onClick={()=>setMenuOpen(v=>!v)} className="p-2.5 border border-foreground md:hidden" aria-label="Menu">{menuOpen?<X className="w-5 h-5"/>:<Menu className="w-5 h-5"/>}</button>
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const { user, roles } = useAuth();
+  const { data: categories } = useCategories();
+  const isAdmin = roles.includes('admin') || roles.includes('editor');
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) { navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`); setSearchOpen(false); setSearchQuery(''); }
+  };
+
+  return <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+    {/* Utility bar */}
+    <div className="hidden md:block border-b border-border">
+      <div className="container flex items-center justify-between py-2.5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary">
+        <div className="flex items-center gap-6">
+          <span>Edition: Juba, South Sudan</span>
+          <span className="flex items-center gap-2 text-destructive"><i className="pulse-dot" />Live newsroom</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <span>{new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+          <Link to="/search" className="animated-underline">Archive</Link>
         </div>
       </div>
-      <nav className="hidden md:flex items-center gap-7 py-2.5 border-t border-foreground/15 overflow-x-auto">
-        {(categories||[]).map(c=><Link key={c.id} to={`/category/${c.slug}`} className="font-mono text-[11px] font-bold uppercase whitespace-nowrap animated-underline">{c.name}</Link>)}
-      </nav>
     </div>
-    <AnimatePresence>{searchOpen&&<motion.form initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}} exit={{height:0,opacity:0}} onSubmit={handleSearch} className="overflow-hidden border-t border-foreground"><div className="container py-3 flex gap-2"><input autoFocus value={searchQuery} onChange={e=>setSearchQuery(e.target.value)} placeholder="Search the archive" className="flex-1 bg-transparent border-b-2 border-foreground px-2 py-2 font-body focus:outline-none"/><button className="bg-foreground text-background p-3" aria-label="Submit search"><ArrowRight className="w-5 h-5"/></button></div></motion.form>}</AnimatePresence>
-    <AnimatePresence>{menuOpen&&<motion.nav initial={{height:0}} animate={{height:'auto'}} exit={{height:0}} className="overflow-hidden border-t border-foreground md:hidden"><div className="container py-4 grid grid-cols-2 gap-px bg-foreground">{(categories||[]).map(c=><Link key={c.id} onClick={()=>setMenuOpen(false)} to={`/category/${c.slug}`} className="bg-background p-4 font-display text-sm uppercase">{c.name}</Link>)}</div></motion.nav>}</AnimatePresence>
-  </header>
+
+    {/* Masthead */}
+    <div className="container relative flex items-center justify-between gap-4 py-4 md:py-9">
+      <div className="flex-1 md:hidden" />
+      <Link to="/" className="md:absolute md:left-1/2 md:-translate-x-1/2 text-center" aria-label="Juba Chronicle home">
+        <span className="block font-display text-[1.65rem] sm:text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-none">
+          Juba<span className="text-accent">.</span>Chronicle
+        </span>
+        <span className="hidden md:block mt-2 text-[10px] font-extrabold uppercase tracking-[0.45em] text-muted-foreground">The pulse of the nation</span>
+      </Link>
+      <div className="flex flex-1 items-center justify-end gap-1">
+        <button onClick={() => setSearchOpen(v => !v)} className="grid place-items-center h-10 w-10 rounded-full hover:bg-muted transition-colors" aria-label="Search"><Search className="w-5 h-5" /></button>
+        {isAdmin && <Link to="/admin" className="hidden md:grid place-items-center h-10 w-10 rounded-full text-accent hover:bg-muted" aria-label="Admin"><Shield className="w-5 h-5" /></Link>}
+        <Link to={user ? '/dashboard' : '/auth'} className="hidden md:grid place-items-center h-10 w-10 rounded-full hover:bg-muted" aria-label={user ? 'Dashboard' : 'Sign in'}><User className="w-5 h-5" /></Link>
+        <button onClick={() => setMenuOpen(v => !v)} className="grid place-items-center h-10 w-10 rounded-full border border-border md:hidden" aria-label="Menu">{menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}</button>
+      </div>
+    </div>
+
+    {/* Category rail */}
+    <nav className="hidden md:block border-t border-border">
+      <div className="container flex items-center justify-center gap-3 py-2.5 overflow-x-auto">
+        {(categories || []).map(c => (
+          <Link key={c.id} to={`/category/${c.slug}`} className="chip whitespace-nowrap border border-border text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors">{c.name}</Link>
+        ))}
+      </div>
+    </nav>
+
+    <AnimatePresence>{searchOpen && (
+      <motion.form initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} onSubmit={handleSearch} className="overflow-hidden border-t border-border bg-muted">
+        <div className="container py-4 flex gap-2">
+          <input autoFocus value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search the Chronicle archive" className="flex-1 rounded-full bg-background border border-border px-5 py-3 focus:outline-none focus:border-accent" />
+          <button className="pill-accent" aria-label="Submit search">Search<ArrowRight className="w-4 h-4" /></button>
+        </div>
+      </motion.form>
+    )}</AnimatePresence>
+
+    <AnimatePresence>{menuOpen && (
+      <motion.nav initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t border-border md:hidden">
+        <div className="container py-4 grid grid-cols-2 gap-2">
+          {(categories || []).map(c => (
+            <Link key={c.id} onClick={() => setMenuOpen(false)} to={`/category/${c.slug}`} className="rounded-xl bg-muted px-4 py-3 font-display text-sm font-bold uppercase">{c.name}</Link>
+          ))}
+        </div>
+      </motion.nav>
+    )}</AnimatePresence>
+  </header>;
 };
 export default SiteHeader;
