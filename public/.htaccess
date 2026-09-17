@@ -2,15 +2,19 @@
   RewriteEngine On
   RewriteBase /
 
-  # Redirect social media crawlers to the OG function for article pages.
-  # Use an external redirect instead of Apache proxying because many cPanel hosts
-  # disable or break proxy passthrough, which causes 503 responses to crawlers.
-  RewriteCond %{HTTP_USER_AGENT} facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Google-Structured-Data-Testing-Tool|Googlebot|vkShare|PinterestBot|Viber|SkypeUriPreview|redditbot|Tumblr|Mastodon|Embedly|Quora\ Link\ Preview|Iframely|outbrain|W3C_Validator [NC]
-  RewriteCond %{REQUEST_URI} ^/article/(.+)$ [NC]
-  RewriteRule ^article/(.+)$ https://fxnlvjbuyxzjpmlvjfmh.supabase.co/functions/v1/og-article?slug=$1 [R=302,L,QSA,B]
+  # Social crawlers do not run JavaScript, so serve them server-rendered
+  # Open Graph / Twitter Card metadata from og.php on this same domain.
+  # Same-domain internal rewrite: no proxy module needed and no backend URL
+  # is ever exposed to the crawler or the user.
+  RewriteCond %{HTTP_USER_AGENT} facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|vkShare|PinterestBot|Viber|SkypeUriPreview|redditbot|Tumblr|Mastodon|Embedly|Quora\ Link\ Preview|Iframely|outbrain|W3C_Validator|Google-Structured-Data-Testing-Tool [NC]
+  RewriteRule ^article/(.+)$ /og.php?slug=$1 [L,QSA]
 
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "all"
 </IfModule>

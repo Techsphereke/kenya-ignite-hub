@@ -160,7 +160,6 @@ Deno.serve(async (req) => {
   <!-- JSON-LD -->
   <script type="application/ld+json">${jsonLd}</script>
 
-  <meta http-equiv="refresh" content="0;url=${articleUrl}" />
 </head>
 <body>
   <script>location.replace(${JSON.stringify(articleUrl)});</script>
