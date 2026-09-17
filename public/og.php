@@ -122,7 +122,7 @@ header('X-Robots-Tag: all');
 <meta property="og:locale" content="en_KE" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:site" content="@KenyaIgnite" />
+<meta name="twitter:site" content="@JubaChronicle" />
 <meta name="twitter:title" content="<?= e($title) ?>" />
 <meta name="twitter:description" content="<?= e($desc) ?>" />
 <meta name="twitter:image" content="<?= e($image) ?>" />
