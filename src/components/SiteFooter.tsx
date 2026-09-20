@@ -19,8 +19,8 @@ const SiteFooter = () => {
           </div>
         </div>
         <div className="md:col-span-3">
-          <h3 className="text-[10px] font-extrabold uppercase tracking-[0.28em] text-primary-foreground/50 mb-4">Newsroom</h3>
-          <a href="mailto:newsroom@jubachronicle.com" className="flex items-center gap-2 text-sm hover:text-accent transition-colors">newsroom@jubachronicle.com <ArrowUpRight className="w-4 h-4" /></a>
+          <h3 className="text-[10px] font-extrabold uppercase tracking-[0.28em] text-primary-foreground/50 mb-4">Contact us</h3>
+          <a href="mailto:jubachronicle643@gmail.com" className="flex items-center gap-2 text-sm hover:text-accent transition-colors">jubachronicle643@gmail.com <ArrowUpRight className="w-4 h-4 shrink-0" /></a>
           <p className="text-sm text-primary-foreground/60 mt-2">Juba, South Sudan</p>
         </div>
       </div>
