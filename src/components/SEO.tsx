@@ -78,6 +78,11 @@ const SEO = ({
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={metaDescription} />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:image:secure_url" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={title || siteName} />
+      <meta property="og:locale" content="en_SS" />
       <meta property="og:site_name" content={siteName} />
 
       {/* Twitter */}
@@ -86,6 +91,7 @@ const SEO = ({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={metaDescription} />
       <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image:alt" content={title || siteName} />
       <meta name="twitter:site" content="@JubaChronicle" />
 
       {/* Article Specific */}

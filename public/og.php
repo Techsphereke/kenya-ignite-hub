@@ -55,7 +55,7 @@ $slug = isset($_GET['slug']) ? preg_replace('/[^a-zA-Z0-9\-_]/', '', $_GET['slug
 $article = null;
 
 if ($slug !== '') {
-  $endpoint = API_BASE . '/rest/v1/articles?select=title,slug,excerpt,content,cover_image,published_at'
+  $endpoint = API_BASE . '/rest/v1/articles?select=title,slug,excerpt,content,cover_image,published_at,updated_at,seo_title,meta_description,focus_keyphrase,canonical_url,tags'
     . '&status=eq.approved&slug=eq.' . rawurlencode($slug) . '&limit=1';
   $ctx = stream_context_create([
     'http' => [
@@ -75,9 +75,13 @@ if ($slug !== '') {
 $articleUrl = SITE_URL . '/article/' . $slug;
 
 if ($article) {
-  $title = $article['title'] ?: SITE_NAME;
-  $desc  = !empty($article['excerpt']) ? excerpt($article['excerpt']) : excerpt((string) ($article['content'] ?? ''));
+  $title = !empty($article['seo_title']) ? $article['seo_title'] : ($article['title'] ?: SITE_NAME);
+  $desc  = !empty($article['meta_description']) ? excerpt($article['meta_description']) : (!empty($article['excerpt']) ? excerpt($article['excerpt']) : excerpt((string) ($article['content'] ?? '')));
   $image = share_image($article['cover_image'] ?? null);
+  if (!empty($article['canonical_url'])) {
+    $candidate = filter_var($article['canonical_url'], FILTER_VALIDATE_URL);
+    if ($candidate && parse_url($candidate, PHP_URL_SCHEME) === 'https') $articleUrl = $candidate;
+  }
 } else {
   $title = SITE_NAME . ' — Igniting Stories That Matter';
   $desc  = FALLBACK_DESC;
@@ -95,6 +99,8 @@ $jsonLd = json_encode([
   'url'      => $articleUrl,
   'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $articleUrl],
   'datePublished' => $article['published_at'] ?? null,
+  'dateModified' => $article['updated_at'] ?? ($article['published_at'] ?? null),
+  'keywords' => $article['tags'] ?? [],
   'author'   => ['@type' => 'Person', 'name' => 'Our Correspondent'],
   'publisher' => [
     '@type' => 'Organization',
@@ -131,8 +137,12 @@ header('X-Robots-Tag: all');
 <meta property="og:locale" content="en_SS" />
 <?php if ($article && !empty($article['published_at'])): ?>
 <meta property="article:published_time" content="<?= e($article['published_at']) ?>" />
+<meta property="article:modified_time" content="<?= e($article['updated_at'] ?? $article['published_at']) ?>" />
 <meta property="article:author" content="Our Correspondent" />
 <?php endif; ?>
+<?php foreach (($article['tags'] ?? []) as $tag): ?>
+<meta property="article:tag" content="<?= e((string) $tag) ?>" />
+<?php endforeach; ?>
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@JubaChronicle" />

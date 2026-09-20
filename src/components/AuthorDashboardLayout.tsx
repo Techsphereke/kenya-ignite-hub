@@ -2,6 +2,7 @@ import { ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import SEO from '@/components/SEO';
 import { LayoutDashboard, FileText, PlusSquare, Image, MessageSquare, UserRound, ExternalLink, LogOut, Menu, X } from 'lucide-react';
 
 type AuthorDashboardLayoutProps = {
@@ -25,6 +26,7 @@ const AuthorDashboardLayout = ({ children, active, onDashboard, onNewPost, onNav
 
   return (
     <div className="newsroom-workspace min-h-screen bg-newsroom-canvas text-newsroom-ink">
+      <SEO title="Author workspace" noindex />
       <aside className={`fixed inset-y-0 left-0 z-50 flex w-60 flex-col bg-newsroom-sidebar text-newsroom-sidebarText transition-transform duration-200 md:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="border-b border-newsroom-sidebarLine px-5 py-5">
           <Link to="/" className="font-newsroom-heading text-xl font-bold text-newsroom-sidebarActive">Juba Chronicle</Link>
