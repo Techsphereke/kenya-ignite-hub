@@ -8,7 +8,7 @@
  * live article data. Humans are redirected to the normal app URL by JS.
  */
 
-const SITE_URL   = 'https://kenyaignite.co.ke';
+const SITE_URL   = 'https://jubachronicles.com';
 const SITE_NAME  = 'Juba Chronicle';
 const API_BASE   = 'https://fxnlvjbuyxzjpmlvjfmh.supabase.co';
 const ANON_KEY   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4bmx2amJ1eXh6anBtbHZqZm1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTgxMzcsImV4cCI6MjA5MDAzNDEzN30.57JXv70WATpjAi-c-z6GB5IeIYJrQpYz8_dSSAwq8Ak';

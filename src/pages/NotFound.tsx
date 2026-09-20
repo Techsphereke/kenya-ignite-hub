@@ -12,7 +12,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-muted pb-20 md:pb-0">
+    <div className="min-h-screen bg-muted">
       <SiteHeader />
       <main className="paper-frame min-h-[calc(100vh-7rem)] overflow-hidden">
         <section className="not-found-stage">

@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-const SITE_URL = "https://kenyaignite.co.ke";
+const SITE_URL = "https://jubachronicles.com";
 const SITE_NAME = "Kenya Ignite";
 const FALLBACK_IMAGE = `${SITE_URL}/og-image.png`;
 const FAVICON_URL = `${SITE_URL}/favicon.png`;
