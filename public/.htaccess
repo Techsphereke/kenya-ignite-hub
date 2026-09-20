@@ -7,6 +7,9 @@ DirectoryIndex index.html
 
   # Social crawlers do not run JavaScript, so serve them server-rendered
   # Open Graph / Twitter Card metadata from og.php on this same domain.
+  # app=1 means og.php already handed this visitor over to the real app,
+  # so never send them back here (that caused an endless redirect / blank page).
+  RewriteCond %{QUERY_STRING} !(^|&)app=1(&|$)
   RewriteCond %{HTTP_USER_AGENT} facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|vkShare|PinterestBot|Viber|SkypeUriPreview|redditbot|Tumblr|Mastodon|Embedly|Quora\ Link\ Preview|Iframely|outbrain|W3C_Validator|Google-Structured-Data-Testing-Tool [NC]
   RewriteRule ^article/([A-Za-z0-9_-]+)/?$ /og.php?slug=$1 [L,QSA]
 

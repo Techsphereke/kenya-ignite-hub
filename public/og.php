@@ -75,6 +75,10 @@ if ($slug !== '') {
 }
 
 $articleUrl = SITE_URL . '/article/' . $slug;
+// In-app browsers (WhatsApp, Facebook, Instagram) send crawler-like user agents,
+// so they land here too. Send them on to the real app with ?app=1, which
+// .htaccess uses to skip this file and avoid an endless redirect loop.
+$appUrl = $articleUrl . '?app=1';
 
 if ($article) {
   $title = $article['title'] ?: SITE_NAME;
@@ -150,7 +154,7 @@ header_remove('X-Powered-By');
 <script type="application/ld+json"><?= $jsonLd ?></script>
 </head>
 <body>
-<script>location.replace(<?= json_encode($articleUrl) ?>);</script>
+<script>location.replace(<?= json_encode($appUrl) ?>);</script>
 <h1><?= e($title) ?></h1>
 <p><?= e($desc) ?></p>
 <p><a href="<?= e($articleUrl) ?>">Continue to <?= SITE_NAME ?></a></p>
