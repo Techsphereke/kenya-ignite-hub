@@ -9,9 +9,13 @@ if (rootElement) {
 
   const openingLoader = document.getElementById("opening-loader");
   if (openingLoader) {
-    window.setTimeout(() => {
-      openingLoader.classList.add("is-leaving");
-      window.setTimeout(() => openingLoader.remove(), 420);
-    }, 700);
+    // Hide as soon as the first frame of the app is painted, so the site
+    // content shows immediately instead of waiting on a fixed delay.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        openingLoader.classList.add("is-leaving");
+        window.setTimeout(() => openingLoader.remove(), 320);
+      });
+    });
   }
 }
