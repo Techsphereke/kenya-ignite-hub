@@ -7,10 +7,10 @@ const corsHeaders = {
 };
 
 const SITE_URL = "https://jubachronicles.com";
-const SITE_NAME = "Kenya Ignite";
+const SITE_NAME = "Juba Chronicle";
 const FALLBACK_IMAGE = `${SITE_URL}/og-image.png`;
 const FAVICON_URL = `${SITE_URL}/favicon.png`;
-const FALLBACK_DESCRIPTION = "Kenya Ignite brings you breaking news, politics, business, technology, sports, and entertainment from Kenya and East Africa.";
+const FALLBACK_DESCRIPTION = "Juba Chronicle brings you breaking news, politics, business, technology, sports, and entertainment from South Sudan and the region.";
 
 function escapeHtml(text: string): string {
   return text
@@ -155,7 +155,7 @@ Deno.serve(async (req) => {
   <meta name="twitter:title" content="${title}" />
   <meta name="twitter:description" content="${description}" />
   <meta name="twitter:image" content="${image}" />
-  <meta name="twitter:site" content="@KenyaIgnite" />
+  <meta name="twitter:site" content="@JubaChronicle" />
 
   <!-- JSON-LD -->
   <script type="application/ld+json">${jsonLd}</script>
