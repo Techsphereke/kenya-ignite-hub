@@ -7,7 +7,7 @@ DirectoryIndex index.html
 
   # Social crawlers do not run JavaScript, so serve them server-rendered
   # Open Graph / Twitter Card metadata from og.php on this same domain.
-  RewriteCond %{HTTP_USER_AGENT} facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|vkShare|PinterestBot|Viber|SkypeUriPreview|redditbot|Tumblr|Mastodon|Embedly|Quora\ Link\ Preview|Iframely|outbrain|W3C_Validator|Google-Structured-Data-Testing-Tool [NC]
+  RewriteCond %{HTTP_USER_AGENT} Googlebot|Google-InspectionTool|bingbot|DuckDuckBot|Applebot|facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|vkShare|PinterestBot|Viber|SkypeUriPreview|redditbot|Tumblr|Mastodon|Embedly|Quora\ Link\ Preview|Iframely|outbrain|W3C_Validator|Google-Structured-Data-Testing-Tool [NC]
   RewriteRule ^article/([A-Za-z0-9_-]+)/?$ /og.php?slug=$1 [L,QSA]
 
   # Single page app: serve real files/folders, everything else -> index.html

@@ -21,3 +21,11 @@
 - [x] Connect author dashboard, media library, comments, and profile views
 - [x] Add visible admin-panel access for administrators and editors
 - [ ] Verify authenticated author and admin flows after session refresh
+
+## Search indexing and post SEO
+- [x] Add search-engine sitemap, crawler discovery, and private-page exclusions
+- [x] Add optional per-post SEO fields and live WordPress-style scoring
+- [x] Use post SEO fields in article metadata and crawler previews
+- [x] Show SEO status in the author posts list
+- [x] Validate article metadata, TypeScript, and sitemap output
+- [ ] Verify the authenticated SEO editor after deployment and submit the sitemap in Google Search Console

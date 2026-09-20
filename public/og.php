@@ -55,7 +55,7 @@ $slug = isset($_GET['slug']) ? preg_replace('/[^a-zA-Z0-9\-_]/', '', $_GET['slug
 $article = null;
 
 if ($slug !== '') {
-  $endpoint = API_BASE . '/rest/v1/articles?select=title,slug,excerpt,content,cover_image,published_at'
+  $endpoint = API_BASE . '/rest/v1/articles?select=title,slug,excerpt,content,cover_image,published_at,updated_at,seo_title,meta_description,focus_keyphrase,canonical_url,tags'
     . '&status=eq.approved&slug=eq.' . rawurlencode($slug) . '&limit=1';
   $ctx = stream_context_create([
     'http' => [
@@ -72,17 +72,23 @@ if ($slug !== '') {
   }
 }
 
-$articleUrl = SITE_URL . '/article/' . $slug;
+$pageUrl = SITE_URL . '/article/' . $slug;
+$canonicalUrl = $pageUrl;
 
 if ($article) {
-  $title = $article['title'] ?: SITE_NAME;
-  $desc  = !empty($article['excerpt']) ? excerpt($article['excerpt']) : excerpt((string) ($article['content'] ?? ''));
+  $title = !empty($article['seo_title']) ? $article['seo_title'] : ($article['title'] ?: SITE_NAME);
+  $desc  = !empty($article['meta_description']) ? excerpt($article['meta_description']) : (!empty($article['excerpt']) ? excerpt($article['excerpt']) : excerpt((string) ($article['content'] ?? '')));
   $image = share_image($article['cover_image'] ?? null);
+  if (!empty($article['canonical_url'])) {
+    $candidate = filter_var($article['canonical_url'], FILTER_VALIDATE_URL);
+    if ($candidate && parse_url($candidate, PHP_URL_SCHEME) === 'https') $canonicalUrl = $candidate;
+  }
 } else {
   $title = SITE_NAME . ' — Igniting Stories That Matter';
   $desc  = FALLBACK_DESC;
   $image = FALLBACK_IMAGE;
-  $articleUrl = $slug !== '' ? $articleUrl : SITE_URL;
+  $pageUrl = $slug !== '' ? $pageUrl : SITE_URL;
+  $canonicalUrl = $pageUrl;
 }
 $imageType = image_type($image);
 
@@ -92,9 +98,11 @@ $jsonLd = json_encode([
   'headline' => $title,
   'description' => $desc,
   'image'    => [$image],
-  'url'      => $articleUrl,
-  'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $articleUrl],
+  'url'      => $canonicalUrl,
+  'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $canonicalUrl],
   'datePublished' => $article['published_at'] ?? null,
+  'dateModified' => $article['updated_at'] ?? ($article['published_at'] ?? null),
+  'keywords' => $article['tags'] ?? [],
   'author'   => ['@type' => 'Person', 'name' => 'Our Correspondent'],
   'publisher' => [
     '@type' => 'Organization',
@@ -114,14 +122,14 @@ header('X-Robots-Tag: all');
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><?= e($title) ?> | <?= SITE_NAME ?></title>
 <meta name="description" content="<?= e($desc) ?>" />
-<link rel="canonical" href="<?= e($articleUrl) ?>" />
+<link rel="canonical" href="<?= e($canonicalUrl) ?>" />
 <link rel="icon" href="<?= SITE_URL ?>/favicon.png" type="image/png" />
 
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="<?= SITE_NAME ?>" />
 <meta property="og:title" content="<?= e($title) ?>" />
 <meta property="og:description" content="<?= e($desc) ?>" />
-<meta property="og:url" content="<?= e($articleUrl) ?>" />
+<meta property="og:url" content="<?= e($canonicalUrl) ?>" />
 <meta property="og:image" content="<?= e($image) ?>" />
 <meta property="og:image:secure_url" content="<?= e($image) ?>" />
 <meta property="og:image:type" content="<?= e($imageType) ?>" />
@@ -131,8 +139,12 @@ header('X-Robots-Tag: all');
 <meta property="og:locale" content="en_SS" />
 <?php if ($article && !empty($article['published_at'])): ?>
 <meta property="article:published_time" content="<?= e($article['published_at']) ?>" />
+<meta property="article:modified_time" content="<?= e($article['updated_at'] ?? $article['published_at']) ?>" />
 <meta property="article:author" content="Our Correspondent" />
 <?php endif; ?>
+<?php foreach (($article['tags'] ?? []) as $tag): ?>
+<meta property="article:tag" content="<?= e((string) $tag) ?>" />
+<?php endforeach; ?>
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@JubaChronicle" />
@@ -144,9 +156,9 @@ header('X-Robots-Tag: all');
 <script type="application/ld+json"><?= $jsonLd ?></script>
 </head>
 <body>
-<script>location.replace(<?= json_encode($articleUrl) ?>);</script>
+<script>location.replace(<?= json_encode($pageUrl) ?>);</script>
 <h1><?= e($title) ?></h1>
 <p><?= e($desc) ?></p>
-<p><a href="<?= e($articleUrl) ?>">Continue to <?= SITE_NAME ?></a></p>
+<p><a href="<?= e($pageUrl) ?>">Continue to <?= SITE_NAME ?></a></p>
 </body>
 </html>
