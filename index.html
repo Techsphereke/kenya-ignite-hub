@@ -41,6 +41,13 @@
       <span class="site-loader__edition">Loading today’s edition</span>
     </div>
     <div id="root"></div>
+    <script>
+      // Safety net: never leave a visitor stuck on the loading screen.
+      setTimeout(function () {
+        var l = document.getElementById('opening-loader');
+        if (l) { l.classList.add('is-leaving'); setTimeout(function () { l.remove(); }, 320); }
+      }, 6000);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
