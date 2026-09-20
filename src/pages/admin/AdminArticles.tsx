@@ -26,14 +26,14 @@ const toLocalInput = (iso?: string | null) => {
 };
 
 const AdminArticles = () => {
-  const [articles, setArticles] = useState<(Article & { profiles?: { display_name: string } | null; categories?: { name: string } | null })[]>([]);
+  const [articles, setArticles] = useState<(Article & { categories?: { name: string } | null })[]>([]);
   const [filter, setFilter] = useState<ArticleStatus | 'all'>('all');
   const [loading, setLoading] = useState(true);
 
   const fetchArticles = async () => {
     let query = supabase
       .from('articles')
-      .select('*, profiles!articles_author_id_fkey(display_name), categories(name)')
+      .select('*, categories(name)')
       .order('created_at', { ascending: false });
     if (filter !== 'all') query = query.eq('status', filter);
     const { data, error } = await query;
