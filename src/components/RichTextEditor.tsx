@@ -7,6 +7,7 @@ import { Bold, Italic, Heading2, List, ListOrdered, LinkIcon, ImageIcon, Undo, R
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import type { ReactNode } from 'react';
 
 interface RichTextEditorProps {
   content: string;
@@ -50,7 +51,7 @@ const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     if (url) editor.chain().focus().setLink({ href: url }).run();
   };
 
-  const tool = (label: string, action: () => void, icon: React.ReactNode, active = false) => (
+  const tool = (label: string, action: () => void, icon: ReactNode, active = false) => (
     <Button type="button" variant={active ? 'default' : 'ghost'} size="icon" onClick={action} className="h-8 w-8" title={label} aria-label={label}>{icon}</Button>
   );
 
