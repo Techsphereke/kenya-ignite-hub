@@ -1,5 +1,11 @@
 User-agent: *
 Allow: /
+Disallow: /auth
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /search
+
+Sitemap: https://jubachronicles.com/sitemap.xml
 Disallow: /admin/
 Disallow: /auth/
 Disallow: /dashboard/
