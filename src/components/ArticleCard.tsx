@@ -53,7 +53,7 @@ const ArticleCard = ({ article, variant = 'default' }: Props) => {
     <motion.article initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="group">
       <Link to={`/article/${article.slug}`} className="block">
         <div className="relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-[16/10] bg-muted image-reveal">
-          <img src={article.cover_image || '/placeholder.svg'} alt={article.title} className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-105" />
+          <img src={article.cover_image || '/placeholder.svg'} alt={article.title} fetchPriority="high" decoding="async" className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-transparent" />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <span className="ghost-headline text-[22vw] md:text-[15vw]">Juba</span>
