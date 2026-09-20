@@ -72,6 +72,46 @@ DirectoryIndex index.html
   <FilesMatch "\.html$">
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
+
+  # ---- Security headers ----
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Resource-Policy "same-site"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), usb=(), payment=(), interest-cohort=()"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+  Header unset X-Powered-By
+  Header unset Server
+
+  # Enable the two lines below only after an SSL certificate is active on the domain.
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+</IfModule>
+
+# Force HTTPS — uncomment once an SSL certificate is installed for the domain.
+#<IfModule mod_rewrite.c>
+#  RewriteCond %{HTTPS} off
+#  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+#</IfModule>
+
+# Block access to source, config and hidden files if any get uploaded by mistake
+<FilesMatch "(^\.(?!well-known)|\.(env|ini|log|sh|sql|bak|old|json|yml|yaml|lock|ts|tsx|map)$|^(package|composer)\.)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Do not allow directory listings
+Options -Indexes
+
+# Disable risky HTTP methods
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK|DELETE|PUT|PATCH)$
+  RewriteRule .* - [R=405,L]
 </IfModule>
 
 ErrorDocument 404 /index.html
