@@ -4,9 +4,9 @@ import { Helmet } from 'react-helmet-async';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
-import { useArticleBySlug, useArticleComments, useLatestArticles, formatDate, DbComment } from '@/hooks/use-articles';
+import { useArticleBySlug, useArticleComments, useLatestArticles, formatDate, timeAgo, DbComment } from '@/hooks/use-articles';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Copy, Check, Newspaper, TrendingUp } from 'lucide-react';
+import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Copy, Check, Newspaper, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -142,8 +142,6 @@ const ArticlePage = () => {
                 <span>{formatDate(article.published_at)}</span>
                 <span className="text-primary/30">·</span>
                 <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{article.reading_time} min read</span>
-                <span className="text-primary/30">·</span>
-                <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" />{article.views.toLocaleString()} views</span>
               </div>
             </motion.div>
 
@@ -241,7 +239,7 @@ const ArticlePage = () => {
                     <div className="min-w-0">
                       <span className="font-mono text-[10px] uppercase text-secondary">{item.category_name || `Update ${index + 1}`}</span>
                       <h3 className="mt-1 line-clamp-3 font-display text-sm font-black leading-tight text-foreground group-hover:text-primary transition-colors">{item.title}</h3>
-                      <p className="mt-2 flex items-center gap-1 font-mono text-[10px] uppercase text-muted-foreground"><Eye className="h-3 w-3" /> {item.views.toLocaleString()}</p>
+                      <p className="mt-2 font-mono text-[10px] uppercase text-muted-foreground">{timeAgo(item.published_at)}</p>
                     </div>
                   </Link>
                 ))}
