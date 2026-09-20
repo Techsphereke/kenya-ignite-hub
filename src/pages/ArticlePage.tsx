@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Copy, Check, Newspaper, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { getCanonicalUrl, getSeoDescription, getSeoTitle } from '@/lib/article-seo';
 
 const CommentItem = ({ comment, replies }: { comment: DbComment; replies: DbComment[] }) => (
   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="py-4 border-b border-border/30 last:border-0">
@@ -99,19 +100,24 @@ const ArticlePage = () => {
     );
   }
 
+  const seoTitle = getSeoTitle(article);
+  const seoDescription = getSeoDescription(article) || 'Read more on Juba Chronicle';
+  const canonicalUrl = getCanonicalUrl(article.canonical_url, article.slug);
+
   return (
     <div className="min-h-screen bg-background editorial-shell">
       <SEO 
-        title={article.title}
-        description={article.excerpt}
-        canonical={shareUrl}
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonicalUrl}
         ogType="article"
         ogImage={article.cover_image || 'https://jubachronicles.com/og-image.png'}
         articleData={{
           publishedTime: article.published_at || article.created_at,
           modifiedTime: article.updated_at,
-          author: article.author_name,
-          tags: article.tags || []
+          author: 'Our Correspondent',
+          tags: article.tags || [],
+          section: article.category_name
         }}
       />
       <SiteHeader />

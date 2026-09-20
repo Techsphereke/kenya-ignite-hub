@@ -12,6 +12,7 @@ interface SEOProps {
     modifiedTime?: string;
     author?: string;
     tags?: string[];
+    section?: string;
   };
   noindex?: boolean;
 }
@@ -37,14 +38,24 @@ const SEO = ({
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     "headline": title,
+    "description": metaDescription,
     "image": [ogImage],
     "datePublished": articleData.publishedTime,
     "dateModified": articleData.modifiedTime || articleData.publishedTime,
+    "articleSection": articleData.section,
+    "keywords": articleData.tags || [],
     "author": [{
       "@type": "Person",
       "name": articleData.author || "Juba Chronicle Correspondent",
       "url": "https://jubachronicles.com"
-    }]
+    }],
+    "publisher": {
+      "@type": "Organization",
+      "name": siteName,
+      "logo": { "@type": "ImageObject", "url": "https://jubachronicles.com/favicon.png" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": url },
+    "url": url
   } : {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -58,7 +69,7 @@ const SEO = ({
       {/* Basic Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={metaDescription} />
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
+      {noindex && <meta name="robots" content="noindex, follow" />}
       <link rel="canonical" href={url} />
 
       {/* Open Graph / Facebook */}
@@ -80,6 +91,12 @@ const SEO = ({
       {/* Article Specific */}
       {ogType === 'article' && articleData?.publishedTime && (
         <meta property="article:published_time" content={articleData.publishedTime} />
+      )}
+      {ogType === 'article' && articleData?.modifiedTime && (
+        <meta property="article:modified_time" content={articleData.modifiedTime} />
+      )}
+      {ogType === 'article' && articleData?.section && (
+        <meta property="article:section" content={articleData.section} />
       )}
       {ogType === 'article' && articleData?.author && (
         <meta property="article:author" content={articleData.author} />
