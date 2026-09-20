@@ -9,7 +9,7 @@ interface Props { article: DbArticle; variant?: 'default' | 'featured' | 'compac
 
 const Meta = ({ article, light = false }: { article: DbArticle; light?: boolean }) => (
   <div className={`flex flex-wrap items-center gap-2 text-[9px] font-extrabold uppercase tracking-[0.16em] ${light ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-    <span>{article.author_name}</span><span>•</span>
+    <span>Our Correspondent</span><span>•</span>
     <span>{timeAgo(article.published_at)}</span><span>•</span>
     <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{formatViews(article.views || 0)} views</span>
   </div>
