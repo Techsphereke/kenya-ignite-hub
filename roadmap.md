@@ -23,8 +23,9 @@
 - [ ] Verify authenticated author and admin flows after session refresh
 
 ## Search indexing and post SEO
-- [ ] Add search-engine sitemap, crawler discovery, and private-page exclusions
-- [ ] Add optional per-post SEO fields and live WordPress-style scoring
-- [ ] Use post SEO fields in article metadata and crawler previews
-- [ ] Show SEO status in the author posts list
-- [ ] Validate author editing, article metadata, and sitemap output
+- [x] Add search-engine sitemap, crawler discovery, and private-page exclusions
+- [x] Add optional per-post SEO fields and live WordPress-style scoring
+- [x] Use post SEO fields in article metadata and crawler previews
+- [x] Show SEO status in the author posts list
+- [x] Validate article metadata, TypeScript, and sitemap output
+- [ ] Verify the authenticated SEO editor after deployment and submit the sitemap in Google Search Console

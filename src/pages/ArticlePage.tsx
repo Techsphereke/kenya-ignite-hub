@@ -90,6 +90,7 @@ const ArticlePage = () => {
   if (!article) {
     return (
       <div className="min-h-screen bg-background editorial-shell">
+        <SEO title="Article not found" noindex />
         <SiteHeader />
         <div className="container py-20 text-center">
           <h1 className="text-2xl font-display font-bold text-foreground">Article not found</h1>

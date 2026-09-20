@@ -90,11 +90,12 @@ Deno.serve(async (req) => {
     });
   }
 
-  let articleUrl = `${SITE_URL}/article/${article.slug}`;
+  const pageUrl = `${SITE_URL}/article/${article.slug}`;
+  let canonicalUrl = pageUrl;
   if (article.canonical_url) {
     try {
       const candidate = new URL(article.canonical_url);
-      if (candidate.protocol === "https:") articleUrl = candidate.toString();
+      if (candidate.protocol === "https:") canonicalUrl = candidate.toString();
     } catch { /* use the story URL */ }
   }
   const normalizedExcerpt = truncate(
@@ -123,8 +124,8 @@ Deno.serve(async (req) => {
       name: SITE_NAME,
       logo: { "@type": "ImageObject", url: FAVICON_URL },
     },
-    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
-    url: articleUrl,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+    url: canonicalUrl,
   });
 
   const html = `<!DOCTYPE html>
@@ -133,7 +134,7 @@ Deno.serve(async (req) => {
   <meta charset="UTF-8" />
   <title>${title} — ${SITE_NAME}</title>
   <meta name="description" content="${description}" />
-  <link rel="canonical" href="${articleUrl}" />
+  <link rel="canonical" href="${canonicalUrl}" />
   <link rel="icon" href="${FAVICON_URL}" type="image/png" />
 
   <!-- Open Graph -->
@@ -146,7 +147,7 @@ Deno.serve(async (req) => {
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="${title}" />
-  <meta property="og:url" content="${articleUrl}" />
+  <meta property="og:url" content="${canonicalUrl}" />
   <meta property="og:site_name" content="${SITE_NAME}" />
   <meta property="og:locale" content="en_SS" />
   <meta property="article:published_time" content="${publishedAt}" />
@@ -167,8 +168,8 @@ Deno.serve(async (req) => {
 
 </head>
 <body>
-  <script>location.replace(${JSON.stringify(articleUrl)});</script>
-  <p>Redirecting to <a href="${articleUrl}">${title}</a>...</p>
+  <script>location.replace(${JSON.stringify(pageUrl)});</script>
+  <p>Redirecting to <a href="${pageUrl}">${title}</a>...</p>
 </body>
 </html>`;
 
