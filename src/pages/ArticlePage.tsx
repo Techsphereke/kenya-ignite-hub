@@ -53,7 +53,7 @@ const ArticlePage = () => {
   const related = (allLatest || []).filter(a => a.id !== article?.id && a.category_id === article?.category_id).slice(0, 3);
   const sidebarArticles = (allLatest || []).filter(a => a.id !== article?.id).slice(0, 6);
   const topLevel = (comments || []).filter(c => !c.parent_id);
-  const shareUrl = article ? `https://kenyaignite.co.ke/article/${article.slug}` : '';
+  const shareUrl = article ? `https://jubachronicles.com/article/${article.slug}` : '';
 
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,7 +101,7 @@ const ArticlePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background editorial-shell pb-20 md:pb-0">
+    <div className="min-h-screen bg-background editorial-shell">
       <Helmet>
         <title>{`${article.title} — Juba Chronicle`}</title>
         <meta name="description" content={article.excerpt || 'Read more on Juba Chronicle'} />
@@ -109,13 +109,13 @@ const ArticlePage = () => {
         <meta property="og:type" content="article" />
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={article.excerpt || 'Read more on Juba Chronicle'} />
-        <meta property="og:image" content={article.cover_image || 'https://kenyaignite.co.ke/og-image.png'} />
+        <meta property="og:image" content={article.cover_image || 'https://jubachronicles.com/og-image.png'} />
         <meta property="og:url" content={shareUrl} />
         <meta property="og:site_name" content="Juba Chronicle" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={article.title} />
         <meta name="twitter:description" content={article.excerpt || 'Read more on Juba Chronicle'} />
-        <meta name="twitter:image" content={article.cover_image || 'https://kenyaignite.co.ke/og-image.png'} />
+        <meta name="twitter:image" content={article.cover_image || 'https://jubachronicles.com/og-image.png'} />
       </Helmet>
       <SiteHeader />
 

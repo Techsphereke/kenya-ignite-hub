@@ -26,7 +26,7 @@ const Index = () => {
   const secondary = (latest || []).filter(a => a.id !== lead?.id).slice(0, 4);
   const deeper = (latest || []).filter(a => a.id !== lead?.id).slice(4, 8);
 
-  return <div className="min-h-screen bg-muted pb-20 md:pb-0">
+  return <div className="min-h-screen bg-muted">
     <div className="paper-frame editorial-shell md:my-6">
       <SiteHeader />
       <BreakingNewsTicker />
