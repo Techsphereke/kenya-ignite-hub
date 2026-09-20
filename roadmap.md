@@ -18,4 +18,6 @@
 - [x] Redesign the author posts list and post editor
 - [x] Redesign the admin navigation and overview dashboard
 - [x] Align article, user, and comment management screens
-- [ ] Verify authenticated author and admin flows (requires an available test session)
+- [x] Connect author dashboard, media library, comments, and profile views
+- [x] Add visible admin-panel access for administrators and editors
+- [ ] Verify authenticated author and admin flows after session refresh
