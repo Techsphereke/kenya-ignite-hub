@@ -131,7 +131,7 @@ const ArticlePage = () => {
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-display text-foreground leading-[1.02] mt-3 headline-reveal">{article.title}</h1>
 
               <div className="flex flex-wrap items-center gap-3 mt-6 pt-4 border-t border-foreground text-xs text-muted-foreground font-mono uppercase">
-                <span className="font-medium text-foreground">{article.author_name}</span>
+                <span className="font-medium text-foreground">Our Correspondent</span>
                 <span className="text-primary/30">·</span>
                 <span>{formatDate(article.published_at)}</span>
                 <span className="text-primary/30">·</span>
