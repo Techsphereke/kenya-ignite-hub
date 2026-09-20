@@ -19,10 +19,6 @@ export interface DbArticle {
   published_at: string | null;
   created_at: string;
   updated_at: string;
-  seo_title: string | null;
-  meta_description: string | null;
-  focus_keyphrase: string | null;
-  canonical_url: string | null;
   author_name?: string;
   author_avatar?: string | null;
   category_name?: string;

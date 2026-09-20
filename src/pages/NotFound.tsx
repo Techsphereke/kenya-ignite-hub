@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SiteHeader from "@/components/SiteHeader";
-import SEO from "@/components/SEO";
 
 const NotFound = () => {
   const location = useLocation();
@@ -14,7 +13,6 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen bg-muted">
-      <SEO title="Page not found" noindex />
       <SiteHeader />
       <main className="paper-frame min-h-[calc(100vh-7rem)] overflow-hidden">
         <section className="not-found-stage">

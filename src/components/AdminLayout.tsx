@@ -4,7 +4,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { LayoutDashboard, FileText, Users, MessageSquare, ArrowLeft, LogOut, Menu, X, PlusSquare, Image, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import SEO from '@/components/SEO';
 
 const nav = [
   { title: 'Overview', path: '/admin', icon: LayoutDashboard },
@@ -26,7 +25,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
 
   const pageTitle = nav.find(n => n.path === location.pathname)?.title || 'Newsroom';
   return <div className="newsroom-workspace min-h-screen bg-newsroom-canvas text-newsroom-ink flex">
-    <SEO title={`${pageTitle} — Newsroom`} noindex />
     <aside className={`fixed inset-y-0 left-0 z-40 w-60 bg-newsroom-sidebar text-newsroom-sidebarText flex flex-col transition-transform duration-200 md:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className="px-5 py-5 border-b border-newsroom-sidebarLine">
         <Link to="/" className="font-newsroom-heading text-xl font-bold text-newsroom-sidebarActive">Juba Chronicle</Link>

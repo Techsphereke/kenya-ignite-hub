@@ -7,7 +7,6 @@ import { useFeaturedArticles, useLatestArticles, useTrendingArticles, useCategor
 import { ArrowRight, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import SEO from '@/components/SEO';
 
 const CategorySection = ({ categoryId, categoryName, categorySlug }: { categoryId: string; categoryName: string; categorySlug: string }) => {
   const { data: articles } = useArticlesByCategory(categoryId);
@@ -28,7 +27,6 @@ const Index = () => {
   const deeper = (latest || []).filter(a => a.id !== lead?.id).slice(4, 8);
 
   return <div className="min-h-screen bg-muted">
-    <SEO canonical="https://jubachronicles.com/" />
     <div className="paper-frame editorial-shell md:my-6">
       <SiteHeader />
       <BreakingNewsTicker />

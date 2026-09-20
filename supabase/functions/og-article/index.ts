@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
 
   const { data: article } = await supabase
     .from("articles")
-    .select("title, excerpt, content, cover_image, slug, published_at, updated_at, seo_title, meta_description, focus_keyphrase, canonical_url, tags")
+    .select("title, excerpt, content, cover_image, slug, published_at, author_id, reading_time")
     .eq("slug", slug)
     .eq("status", "approved")
     .single();
@@ -90,21 +90,13 @@ Deno.serve(async (req) => {
     });
   }
 
-  const pageUrl = `${SITE_URL}/article/${article.slug}`;
-  let canonicalUrl = pageUrl;
-  if (article.canonical_url) {
-    try {
-      const candidate = new URL(article.canonical_url);
-      if (candidate.protocol === "https:") canonicalUrl = candidate.toString();
-    } catch { /* use the story URL */ }
-  }
+  const articleUrl = `${SITE_URL}/article/${article.slug}`;
   const normalizedExcerpt = truncate(
-    stripHtml(article.meta_description) || stripHtml(article.excerpt) || stripHtml(article.content) || FALLBACK_DESCRIPTION,
+    stripHtml(article.excerpt) || stripHtml(article.content) || FALLBACK_DESCRIPTION,
     220,
   );
   const image = normalizeImageUrl(article.cover_image);
-  const seoTitle = article.seo_title?.trim() || article.title;
-  const title = escapeHtml(seoTitle);
+  const title = escapeHtml(article.title);
   const description = escapeHtml(normalizedExcerpt);
   const publishedAt = article.published_at || new Date().toISOString();
   const plainExcerpt = normalizedExcerpt;
@@ -112,20 +104,19 @@ Deno.serve(async (req) => {
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "NewsArticle",
-    headline: seoTitle,
+    headline: article.title,
     description: plainExcerpt,
     image: [image],
     datePublished: publishedAt,
-    dateModified: article.updated_at || publishedAt,
-    keywords: article.tags || [],
+    dateModified: publishedAt,
     author: { "@type": "Person", name: "Our Correspondent" },
     publisher: {
       "@type": "Organization",
       name: SITE_NAME,
       logo: { "@type": "ImageObject", url: FAVICON_URL },
     },
-    mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
-    url: canonicalUrl,
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    url: articleUrl,
   });
 
   const html = `<!DOCTYPE html>
@@ -134,7 +125,7 @@ Deno.serve(async (req) => {
   <meta charset="UTF-8" />
   <title>${title} — ${SITE_NAME}</title>
   <meta name="description" content="${description}" />
-  <link rel="canonical" href="${canonicalUrl}" />
+  <link rel="canonical" href="${articleUrl}" />
   <link rel="icon" href="${FAVICON_URL}" type="image/png" />
 
   <!-- Open Graph -->
@@ -147,13 +138,11 @@ Deno.serve(async (req) => {
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="${title}" />
-  <meta property="og:url" content="${canonicalUrl}" />
+  <meta property="og:url" content="${articleUrl}" />
   <meta property="og:site_name" content="${SITE_NAME}" />
   <meta property="og:locale" content="en_SS" />
   <meta property="article:published_time" content="${publishedAt}" />
-  <meta property="article:modified_time" content="${article.updated_at || publishedAt}" />
   <meta property="article:author" content="Our Correspondent" />
-  ${(article.tags || []).map((tag: string) => `<meta property="article:tag" content="${escapeHtml(tag)}" />`).join("\n  ")}
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -168,8 +157,8 @@ Deno.serve(async (req) => {
 
 </head>
 <body>
-  <script>location.replace(${JSON.stringify(pageUrl)});</script>
-  <p>Redirecting to <a href="${pageUrl}">${title}</a>...</p>
+  <script>location.replace(${JSON.stringify(articleUrl)});</script>
+  <p>Redirecting to <a href="${articleUrl}">${title}</a>...</p>
 </body>
 </html>`;
 

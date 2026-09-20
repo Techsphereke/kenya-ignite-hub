@@ -17,20 +17,16 @@ export type Database = {
       articles: {
         Row: {
           author_id: string
-          canonical_url: string | null
           category_id: string | null
           content: string
           cover_image: string | null
           created_at: string
           excerpt: string
-          focus_keyphrase: string | null
           id: string
           is_breaking: boolean
           is_featured: boolean
-          meta_description: string | null
           published_at: string | null
           reading_time: number
-          seo_title: string | null
           slug: string
           status: Database["public"]["Enums"]["article_status"]
           tags: string[] | null
@@ -40,20 +36,16 @@ export type Database = {
         }
         Insert: {
           author_id: string
-          canonical_url?: string | null
           category_id?: string | null
           content?: string
           cover_image?: string | null
           created_at?: string
           excerpt?: string
-          focus_keyphrase?: string | null
           id?: string
           is_breaking?: boolean
           is_featured?: boolean
-          meta_description?: string | null
           published_at?: string | null
           reading_time?: number
-          seo_title?: string | null
           slug: string
           status?: Database["public"]["Enums"]["article_status"]
           tags?: string[] | null
@@ -63,20 +55,16 @@ export type Database = {
         }
         Update: {
           author_id?: string
-          canonical_url?: string | null
           category_id?: string | null
           content?: string
           cover_image?: string | null
           created_at?: string
           excerpt?: string
-          focus_keyphrase?: string | null
           id?: string
           is_breaking?: boolean
           is_featured?: boolean
-          meta_description?: string | null
           published_at?: string | null
           reading_time?: number
-          seo_title?: string | null
           slug?: string
           status?: Database["public"]["Enums"]["article_status"]
           tags?: string[] | null

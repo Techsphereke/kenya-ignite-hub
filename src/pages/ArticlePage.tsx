@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import SEO from '@/components/SEO';
+import { Helmet } from 'react-helmet-async';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
@@ -9,7 +9,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Copy, Check, Newspaper, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { getCanonicalUrl, getSeoDescription, getSeoTitle } from '@/lib/article-seo';
 
 const CommentItem = ({ comment, replies }: { comment: DbComment; replies: DbComment[] }) => (
   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="py-4 border-b border-border/30 last:border-0">
@@ -76,9 +75,10 @@ const ArticlePage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background editorial-shell">
-        <SiteHeader />
+
+  return (
+    <div className="min-h-screen bg-background editorial-shell">
+      <SiteHeader />
         <div className="container py-20 text-center font-body text-muted-foreground">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
@@ -90,7 +90,6 @@ const ArticlePage = () => {
   if (!article) {
     return (
       <div className="min-h-screen bg-background editorial-shell">
-        <SEO title="Article not found" noindex />
         <SiteHeader />
         <div className="container py-20 text-center">
           <h1 className="text-2xl font-display font-bold text-foreground">Article not found</h1>
@@ -101,26 +100,23 @@ const ArticlePage = () => {
     );
   }
 
-  const seoTitle = getSeoTitle(article);
-  const seoDescription = getSeoDescription(article) || 'Read more on Juba Chronicle';
-  const canonicalUrl = getCanonicalUrl(article.canonical_url, article.slug);
-
   return (
     <div className="min-h-screen bg-background editorial-shell">
-      <SEO 
-        title={seoTitle}
-        description={seoDescription}
-        canonical={canonicalUrl}
-        ogType="article"
-        ogImage={article.cover_image || 'https://jubachronicles.com/og-image.png'}
-        articleData={{
-          publishedTime: article.published_at || article.created_at,
-          modifiedTime: article.updated_at,
-          author: 'Our Correspondent',
-          tags: article.tags || [],
-          section: article.category_name
-        }}
-      />
+      <Helmet>
+        <title>{`${article.title} — Juba Chronicle`}</title>
+        <meta name="description" content={article.excerpt || 'Read more on Juba Chronicle'} />
+        <link rel="canonical" href={shareUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={article.excerpt || 'Read more on Juba Chronicle'} />
+        <meta property="og:image" content={article.cover_image || 'https://jubachronicles.com/og-image.png'} />
+        <meta property="og:url" content={shareUrl} />
+        <meta property="og:site_name" content="Juba Chronicle" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={article.excerpt || 'Read more on Juba Chronicle'} />
+        <meta name="twitter:image" content={article.cover_image || 'https://jubachronicles.com/og-image.png'} />
+      </Helmet>
       <SiteHeader />
 
       <main className="container max-w-7xl py-8 md:py-14 relative z-10">
