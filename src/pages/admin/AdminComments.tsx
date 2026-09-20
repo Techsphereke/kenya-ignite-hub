@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { Trash2, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Database } from '@/integrations/supabase/types';
+import { Button } from '@/components/ui/button';
 
 type Comment = Database['public']['Tables']['comments']['Row'];
 
@@ -36,11 +37,11 @@ const AdminComments = () => {
     <AdminLayout>
       <div className="mb-5"><h1 className="font-newsroom-heading text-2xl font-semibold">Comments</h1><p className="mt-1 text-sm text-newsroom-muted">Review reader discussion across published stories.</p></div>
       {loading ? (
-        <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-xl animate-spin" /></div>
+        <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-newsroom-blue border-t-transparent rounded-full animate-spin" /></div>
       ) : comments.length === 0 ? (
-        <div className="text-center py-16 bg-card border border-border rounded-xl">
-          <MessageSquare className="w-10 h-10 mx-auto text-muted-foreground/40 mb-3" />
-          <p className="text-muted-foreground font-body">No comments yet</p>
+        <div className="newsroom-panel text-center py-16">
+          <MessageSquare className="w-10 h-10 mx-auto text-newsroom-muted mb-3" />
+          <p className="text-newsroom-muted">No comments yet</p>
         </div>
       ) : (
         <div className="newsroom-panel overflow-hidden divide-y divide-newsroom-line">
@@ -50,23 +51,23 @@ const AdminComments = () => {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-7 h-7 rounded-xl bg-primary/20 flex items-center justify-center text-xs font-body font-bold text-primary flex-shrink-0">
+                    <div className="w-7 h-7 rounded-sm bg-newsroom-blueSoft flex items-center justify-center text-xs font-bold text-newsroom-blue flex-shrink-0">
                       {comment.author_name[0]?.toUpperCase()}
                     </div>
-                    <span className="text-sm font-body font-semibold text-foreground">{comment.author_name}</span>
-                    <span className="text-xs text-muted-foreground font-body">{new Date(comment.created_at).toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-newsroom-ink">{comment.author_name}</span>
+                    <span className="text-xs text-newsroom-muted">{new Date(comment.created_at).toLocaleString()}</span>
                   </div>
-                  <p className="text-sm font-body text-foreground/80 leading-relaxed ml-9">{comment.content}</p>
+                  <p className="text-sm text-newsroom-ink leading-relaxed ml-9">{comment.content}</p>
                   {comment.articles && (
-                    <p className="text-xs text-muted-foreground font-body mt-1.5 ml-9">
-                      On: <span className="font-medium text-foreground/70">{comment.articles.title}</span>
+                    <p className="text-xs text-newsroom-muted mt-1.5 ml-9">
+                      On: <span className="font-medium text-newsroom-ink">{comment.articles.title}</span>
                     </p>
                   )}
                 </div>
-                <button onClick={() => deleteComment(comment.id)}
-                  className="p-1.5 rounded-xl hover:bg-destructive/20 text-destructive transition-all duration-300 flex-shrink-0" title="Delete comment">
+                <Button variant="ghost" size="icon" onClick={() => deleteComment(comment.id)}
+                  className="h-8 w-8 text-newsroom-danger flex-shrink-0" title="Delete comment">
                   <Trash2 className="w-4 h-4" />
-                </button>
+                </Button>
               </div>
             </motion.div>
           ))}

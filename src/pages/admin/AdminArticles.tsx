@@ -11,10 +11,10 @@ type Article = Database['public']['Tables']['articles']['Row'];
 type ArticleStatus = Database['public']['Enums']['article_status'];
 
 const statusStyles: Record<ArticleStatus, string> = {
-  draft: 'bg-muted/50 text-muted-foreground',
-  pending: 'bg-accent/20 text-accent',
-  approved: 'bg-secondary/20 text-secondary',
-  rejected: 'bg-destructive/20 text-destructive',
+  draft: 'bg-newsroom-canvas text-newsroom-muted',
+  pending: 'bg-newsroom-canvas text-newsroom-warning',
+  approved: 'bg-newsroom-canvas text-newsroom-success',
+  rejected: 'bg-newsroom-canvas text-newsroom-danger',
 };
 
 // <input type="datetime-local"> needs a local "YYYY-MM-DDTHH:mm" value
@@ -74,23 +74,23 @@ const AdminArticles = () => {
       <div className="mb-5"><h1 className="font-newsroom-heading text-2xl font-semibold">Posts</h1><p className="mt-1 text-sm text-newsroom-muted">Review, schedule and manage every newsroom story.</p></div>
       <div className="flex flex-wrap gap-3 mb-4 border-b border-newsroom-line pb-3">
         {filters.map(f => (
-          <button key={f.value} onClick={() => setFilter(f.value)}
+          <Button key={f.value} variant="link" size="sm" onClick={() => setFilter(f.value)}
             className={`text-sm transition-colors ${
               filter === f.value
                 ? 'font-semibold text-newsroom-blue'
                 : 'text-newsroom-muted hover:text-newsroom-blue'
             }`}>
             {f.label}
-          </button>
+          </Button>
         ))}
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-xl animate-spin" /></div>
+        <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-newsroom-blue border-t-transparent rounded-full animate-spin" /></div>
       ) : articles.length === 0 ? (
-        <div className="text-center py-16 bg-card border border-border rounded-xl">
-          <FileText className="w-10 h-10 mx-auto text-muted-foreground/40 mb-3" />
-          <p className="text-muted-foreground font-body">No articles found</p>
+        <div className="newsroom-panel text-center py-16">
+          <FileText className="w-10 h-10 mx-auto text-newsroom-muted mb-3" />
+          <p className="text-newsroom-muted">No articles found</p>
         </div>
       ) : (
         <div className="newsroom-panel overflow-hidden divide-y divide-newsroom-line">
@@ -99,28 +99,28 @@ const AdminArticles = () => {
               className="bg-newsroom-surface p-4 hover:bg-newsroom-blueSoft transition-colors">
               <div className="flex items-start gap-4">
                 {article.cover_image && (
-                  <img src={article.cover_image} alt="" className="w-24 h-18 rounded-xl object-cover flex-shrink-0 hidden sm:block" />
+                  <img src={article.cover_image} alt="" className="w-24 h-16 rounded-sm object-cover flex-shrink-0 hidden sm:block" />
                 )}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold text-newsroom-blue line-clamp-2">{article.title}</h3>
                   <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                    <span className={`inline-flex px-2 py-0.5 rounded-xl text-xs font-body font-medium ${statusStyles[article.status]}`}>
+                    <span className={`inline-flex px-2 py-0.5 rounded-sm text-xs font-medium ${statusStyles[article.status]}`}>
                       {article.status}
                     </span>
                     {article.is_breaking && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs font-body font-medium bg-primary/10 text-primary">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-medium bg-newsroom-canvas text-newsroom-danger">
                         <Zap className="w-3 h-3" /> Breaking
                       </span>
                     )}
                     {article.is_featured && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs font-body font-medium bg-accent/20 text-accent">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-medium bg-newsroom-canvas text-newsroom-warning">
                         <Star className="w-3 h-3" /> Featured
                       </span>
                     )}
-                    <span className="text-xs text-muted-foreground font-body flex items-center gap-1">
+                    <span className="text-xs text-newsroom-muted flex items-center gap-1">
                       <Eye className="w-3 h-3" /> {article.views}
                     </span>
-                    <span className="text-xs text-muted-foreground font-body flex items-center gap-1">
+                    <span className="text-xs text-newsroom-muted flex items-center gap-1">
                       <Clock className="w-3 h-3" /> {new Date(article.created_at).toLocaleDateString()}
                     </span>
                   </div>

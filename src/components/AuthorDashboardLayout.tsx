@@ -34,7 +34,7 @@ const AuthorDashboardLayout = ({ children, active, onDashboard, onNewPost }: Aut
           {nav.map(item => {
             const Icon = item.icon;
             const selected = active === item.key || (active === 'dashboard' && item.key === 'posts');
-            return <button key={item.key} onClick={() => { item.action(); setOpen(false); }} className={`flex w-full items-center gap-3 border-l-4 px-5 py-2.5 text-left text-sm transition-colors ${selected ? 'border-newsroom-blue bg-newsroom-sidebarHover text-newsroom-sidebarActive' : 'border-transparent text-newsroom-sidebarText hover:bg-newsroom-sidebarHover hover:text-newsroom-sidebarActive'}`}><Icon className="h-4 w-4" />{item.label}</button>;
+            return <Button key={item.key} variant="ghost" onClick={() => { item.action(); setOpen(false); }} className={`h-auto w-full justify-start rounded-none border-l-4 px-5 py-2.5 text-left text-sm ${selected ? 'border-newsroom-blue bg-newsroom-sidebarHover text-newsroom-sidebarActive' : 'border-transparent text-newsroom-sidebarText hover:bg-newsroom-sidebarHover hover:text-newsroom-sidebarActive'}`}><Icon className="h-4 w-4" />{item.label}</Button>;
           })}
           <div className="my-3 border-t border-newsroom-sidebarLine" />
           <div className="flex items-center gap-3 px-6 py-2.5 text-sm text-newsroom-sidebarMuted"><Image className="h-4 w-4" />Media</div>
