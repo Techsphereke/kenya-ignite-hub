@@ -63,7 +63,7 @@ const Index = () => {
                 <span className="font-display text-4xl font-black leading-none text-accent/30 group-hover:text-accent transition-colors">{String(i + 1).padStart(2, '0')}</span>
                 <div>
                   <h3 className="font-display text-[15px] font-bold leading-tight group-hover:text-accent transition-colors line-clamp-3">{a.title}</h3>
-                  <span className="block mt-2 text-[9px] font-extrabold uppercase tracking-[0.16em] text-muted-foreground">{a.category_name || 'News'} • {a.views || 0} views</span>
+                  <span className="block mt-2 text-[9px] font-extrabold uppercase tracking-[0.16em] text-muted-foreground">{a.category_name || 'News'} • {timeAgo(a.published_at)}</span>
                 </div>
               </Link>
             ))}
