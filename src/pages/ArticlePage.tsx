@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEO from '@/components/SEO';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
@@ -75,10 +75,9 @@ const ArticlePage = () => {
   };
 
   if (isLoading) {
-
-  return (
-    <div className="min-h-screen bg-background editorial-shell">
-      <SiteHeader />
+    return (
+      <div className="min-h-screen bg-background editorial-shell">
+        <SiteHeader />
         <div className="container py-20 text-center font-body text-muted-foreground">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
@@ -102,21 +101,19 @@ const ArticlePage = () => {
 
   return (
     <div className="min-h-screen bg-background editorial-shell">
-      <Helmet>
-        <title>{`${article.title} — Juba Chronicle`}</title>
-        <meta name="description" content={article.excerpt || 'Read more on Juba Chronicle'} />
-        <link rel="canonical" href={shareUrl} />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content={article.title} />
-        <meta property="og:description" content={article.excerpt || 'Read more on Juba Chronicle'} />
-        <meta property="og:image" content={article.cover_image || 'https://jubachronicles.com/og-image.png'} />
-        <meta property="og:url" content={shareUrl} />
-        <meta property="og:site_name" content="Juba Chronicle" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={article.title} />
-        <meta name="twitter:description" content={article.excerpt || 'Read more on Juba Chronicle'} />
-        <meta name="twitter:image" content={article.cover_image || 'https://jubachronicles.com/og-image.png'} />
-      </Helmet>
+      <SEO 
+        title={article.title}
+        description={article.excerpt}
+        canonical={shareUrl}
+        ogType="article"
+        ogImage={article.cover_image || 'https://jubachronicles.com/og-image.png'}
+        articleData={{
+          publishedTime: article.published_at || article.created_at,
+          modifiedTime: article.updated_at,
+          author: article.author_name,
+          tags: article.tags || []
+        }}
+      />
       <SiteHeader />
 
       <main className="container max-w-7xl py-8 md:py-14 relative z-10">
