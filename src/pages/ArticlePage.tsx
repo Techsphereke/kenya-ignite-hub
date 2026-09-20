@@ -4,9 +4,9 @@ import { Helmet } from 'react-helmet-async';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import ArticleCard from '@/components/ArticleCard';
-import { useArticleBySlug, useArticleComments, useLatestArticles, formatDate, DbComment } from '@/hooks/use-articles';
+import { useArticleBySlug, useArticleComments, useLatestArticles, formatDate, timeAgo, DbComment } from '@/hooks/use-articles';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Eye, Copy, Check, Newspaper, TrendingUp } from 'lucide-react';
+import { Clock, Share2, Facebook, Twitter, ArrowLeft, MessageCircle, Copy, Check, Newspaper, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
