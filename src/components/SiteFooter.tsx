@@ -4,7 +4,7 @@ import { useCategories } from '@/hooks/use-articles';
 
 const SiteFooter = () => {
   const { data: categories } = useCategories();
-  return <footer className="hidden md:block relative z-10 mt-24 bg-primary text-primary-foreground">
+  return <footer className="relative z-10 mt-24 bg-primary text-primary-foreground">
     <div className="h-1.5 bg-accent" />
     <div className="container py-14">
       <div className="grid md:grid-cols-12 gap-10">
