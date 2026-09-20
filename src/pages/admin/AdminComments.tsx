@@ -34,6 +34,7 @@ const AdminComments = () => {
 
   return (
     <AdminLayout>
+      <div className="mb-5"><h1 className="font-newsroom-heading text-2xl font-semibold">Comments</h1><p className="mt-1 text-sm text-newsroom-muted">Review reader discussion across published stories.</p></div>
       {loading ? (
         <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-xl animate-spin" /></div>
       ) : comments.length === 0 ? (
@@ -42,10 +43,10 @@ const AdminComments = () => {
           <p className="text-muted-foreground font-body">No comments yet</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="newsroom-panel overflow-hidden divide-y divide-newsroom-line">
           {comments.map((comment, i) => (
             <motion.div key={comment.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-              className="bg-card border border-border rounded-xl p-4 hover:border-accent transition-all duration-300">
+              className="bg-newsroom-surface p-4 hover:bg-newsroom-blueSoft transition-colors">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">

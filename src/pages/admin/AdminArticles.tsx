@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { CheckCircle, XCircle, Trash2, Star, Zap, Eye, Clock, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Database } from '@/integrations/supabase/types';
+import { Button } from '@/components/ui/button';
 
 type Article = Database['public']['Tables']['articles']['Row'];
 type ArticleStatus = Database['public']['Enums']['article_status'];
@@ -70,13 +71,14 @@ const AdminArticles = () => {
 
   return (
     <AdminLayout>
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="mb-5"><h1 className="font-newsroom-heading text-2xl font-semibold">Posts</h1><p className="mt-1 text-sm text-newsroom-muted">Review, schedule and manage every newsroom story.</p></div>
+      <div className="flex flex-wrap gap-3 mb-4 border-b border-newsroom-line pb-3">
         {filters.map(f => (
           <button key={f.value} onClick={() => setFilter(f.value)}
-            className={`px-4 py-2 rounded-full text-[11px] font-extrabold uppercase tracking-[0.14em] transition-all duration-300 ${
+            className={`text-sm transition-colors ${
               filter === f.value
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-background border border-border text-muted-foreground hover:text-primary'
+                ? 'font-semibold text-newsroom-blue'
+                : 'text-newsroom-muted hover:text-newsroom-blue'
             }`}>
             {f.label}
           </button>
@@ -91,16 +93,16 @@ const AdminArticles = () => {
           <p className="text-muted-foreground font-body">No articles found</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="newsroom-panel overflow-hidden divide-y divide-newsroom-line">
           {articles.map((article, i) => (
             <motion.div key={article.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="bg-card border border-border rounded-xl p-4 hover:border-accent transition-all duration-300">
+              className="bg-newsroom-surface p-4 hover:bg-newsroom-blueSoft transition-colors">
               <div className="flex items-start gap-4">
                 {article.cover_image && (
                   <img src={article.cover_image} alt="" className="w-24 h-18 rounded-xl object-cover flex-shrink-0 hidden sm:block" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-base font-display font-semibold text-foreground line-clamp-2">{article.title}</h3>
+                  <h3 className="text-sm font-semibold text-newsroom-blue line-clamp-2">{article.title}</h3>
                   <div className="flex flex-wrap items-center gap-2 mt-1.5">
                     <span className={`inline-flex px-2 py-0.5 rounded-xl text-xs font-body font-medium ${statusStyles[article.status]}`}>
                       {article.status}
@@ -123,39 +125,39 @@ const AdminArticles = () => {
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 mt-2">
-                    <label className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted-foreground">Publish date</label>
+                    <label className="text-xs font-semibold text-newsroom-muted">Publish date</label>
                     <input type="datetime-local" defaultValue={toLocalInput(article.published_at)}
                       onChange={e => updateArticle(article.id, { published_at: e.target.value ? new Date(e.target.value).toISOString() : null })}
-                      className="rounded-lg bg-background border border-border px-2 py-1 text-xs focus:outline-none focus:border-accent" />
+                      className="newsroom-field max-w-[220px] py-1 text-xs" />
                   </div>
                 </div>
 
 
                 <div className="flex flex-col gap-1 flex-shrink-0">
                   {article.status !== 'approved' && (
-                    <button onClick={() => updateArticle(article.id, { status: 'approved', published_at: new Date().toISOString() })}
-                      className="p-1.5 rounded-xl hover:bg-secondary/20 text-secondary transition-all duration-300 hover:shadow-[0_0_10px_hsl(var(--secondary)/0.2)]" title="Approve">
+                    <Button variant="ghost" size="icon" onClick={() => updateArticle(article.id, { status: 'approved', published_at: new Date().toISOString() })}
+                      className="h-8 w-8 text-newsroom-success" title="Approve">
                       <CheckCircle className="w-4 h-4" />
-                    </button>
+                    </Button>
                   )}
                   {article.status !== 'rejected' && (
-                    <button onClick={() => updateArticle(article.id, { status: 'rejected' })}
-                      className="p-1.5 rounded-xl hover:bg-destructive/20 text-destructive transition-all duration-300" title="Reject">
+                    <Button variant="ghost" size="icon" onClick={() => updateArticle(article.id, { status: 'rejected' })}
+                      className="h-8 w-8 text-newsroom-danger" title="Reject">
                       <XCircle className="w-4 h-4" />
-                    </button>
+                    </Button>
                   )}
-                  <button onClick={() => updateArticle(article.id, { is_breaking: !article.is_breaking })}
-                    className={`p-1.5 rounded-xl transition-all duration-300 ${article.is_breaking ? 'text-primary bg-primary/10 shadow-none' : 'text-muted-foreground hover:bg-muted/50'}`} title="Toggle breaking">
+                  <Button variant="ghost" size="icon" onClick={() => updateArticle(article.id, { is_breaking: !article.is_breaking })}
+                    className={`h-8 w-8 ${article.is_breaking ? 'text-newsroom-danger bg-newsroom-canvas' : 'text-newsroom-muted'}`} title="Toggle breaking">
                     <Zap className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => updateArticle(article.id, { is_featured: !article.is_featured })}
-                    className={`p-1.5 rounded-xl transition-all duration-300 ${article.is_featured ? 'text-accent bg-accent/10' : 'text-muted-foreground hover:bg-muted/50'}`} title="Toggle featured">
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => updateArticle(article.id, { is_featured: !article.is_featured })}
+                    className={`h-8 w-8 ${article.is_featured ? 'text-newsroom-warning bg-newsroom-canvas' : 'text-newsroom-muted'}`} title="Toggle featured">
                     <Star className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => deleteArticle(article.id)}
-                    className="p-1.5 rounded-xl hover:bg-destructive/20 text-destructive transition-all duration-300" title="Delete">
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => deleteArticle(article.id)}
+                    className="h-8 w-8 text-newsroom-danger" title="Delete">
                     <Trash2 className="w-4 h-4" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </motion.div>

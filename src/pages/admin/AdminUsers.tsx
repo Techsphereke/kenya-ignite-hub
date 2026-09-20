@@ -50,6 +50,7 @@ const AdminUsers = () => {
 
   return (
     <AdminLayout>
+      <div className="mb-5"><h1 className="font-newsroom-heading text-2xl font-semibold">Users</h1><p className="mt-1 text-sm text-newsroom-muted">Manage newsroom access and publishing roles.</p></div>
       {loading ? (
         <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-xl animate-spin" /></div>
       ) : users.length === 0 ? (
@@ -58,10 +59,10 @@ const AdminUsers = () => {
           <p className="text-muted-foreground font-body">No users found</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="newsroom-panel overflow-hidden divide-y divide-newsroom-line">
           {users.map((user, i) => (
             <motion.div key={user.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-accent transition-all duration-300">
+              className="bg-newsroom-surface p-4 flex flex-col items-start gap-4 hover:bg-newsroom-blueSoft transition-colors sm:flex-row sm:items-center">
               {user.avatar_url ? (
                 <img src={user.avatar_url} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0 ring-2 ring-border/30" />
               ) : (
@@ -87,7 +88,7 @@ const AdminUsers = () => {
                   return (
                     <button key={role} onClick={() => toggleRole(user.user_id, role, has)}
                       title={`${has ? 'Remove' : 'Add'} ${role} role`}
-                      className={`px-2.5 py-1 rounded-xl text-xs font-body font-medium transition-all duration-300 ${
+                      className={`px-2.5 py-1 rounded-sm border border-newsroom-line text-xs font-medium transition-colors ${
                         has ? roleColors[role] : 'bg-muted/30 text-muted-foreground hover:bg-muted/50'
                       }`}>
                       {role}

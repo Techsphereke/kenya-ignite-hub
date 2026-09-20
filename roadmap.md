@@ -13,3 +13,9 @@
 - [x] Match WhatsApp-style previews with story image, headline, excerpt, and Juba Chronicle domain
 - [x] Keep contributor identity private as “Our Correspondent” in article metadata
 - [x] Support article URLs with or without a trailing slash
+
+## WordPress-style newsroom workspace
+- [x] Redesign the author posts list and post editor
+- [x] Redesign the admin navigation and overview dashboard
+- [x] Align article, user, and comment management screens
+- [ ] Verify authenticated author and admin flows (requires an available test session)
