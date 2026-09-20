@@ -3,7 +3,7 @@ import SiteFooter from '@/components/SiteFooter';
 import BreakingNewsTicker from '@/components/BreakingNewsTicker';
 import ArticleCard from '@/components/ArticleCard';
 import RotatingBadge from '@/components/RotatingBadge';
-import { useFeaturedArticles, useLatestArticles, useTrendingArticles, useCategories, useArticlesByCategory } from '@/hooks/use-articles';
+import { useFeaturedArticles, useLatestArticles, useTrendingArticles, useCategories, useArticlesByCategory, timeAgo } from '@/hooks/use-articles';
 import { ArrowRight, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
