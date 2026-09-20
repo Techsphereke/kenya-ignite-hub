@@ -51,7 +51,9 @@ function image_type(string $url): string {
   return 'image/jpeg';
 }
 
-$slug = isset($_GET['slug']) ? preg_replace('/[^a-zA-Z0-9\-_]/', '', $_GET['slug']) : '';
+$slug = isset($_GET['slug']) && is_string($_GET['slug'])
+  ? substr(preg_replace('/[^a-zA-Z0-9\-_]/', '', $_GET['slug']), 0, 200)
+  : '';
 $article = null;
 
 if ($slug !== '') {
@@ -101,11 +103,15 @@ $jsonLd = json_encode([
     'name'  => SITE_NAME,
     'logo'  => ['@type' => 'ImageObject', 'url' => SITE_URL . '/favicon.png'],
   ],
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 
 header('Content-Type: text/html; charset=utf-8');
 header('Cache-Control: public, max-age=300, s-maxage=600');
 header('X-Robots-Tag: all');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('X-Frame-Options: SAMEORIGIN');
+header_remove('X-Powered-By');
 ?>
 <!DOCTYPE html>
 <html lang="en">
