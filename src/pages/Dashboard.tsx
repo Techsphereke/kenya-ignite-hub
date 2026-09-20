@@ -32,7 +32,7 @@ const toLocalInput = (iso?: string | null) => {
 };
 
 const Dashboard = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [articles, setArticles] = useState<Article[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);

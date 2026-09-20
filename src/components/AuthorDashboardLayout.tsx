@@ -42,7 +42,7 @@ const AuthorDashboardLayout = ({ children, active, onDashboard, onNewPost, onNav
             { label: 'Comments', icon: MessageSquare, key: 'comments' as const },
             { label: 'Profile', icon: UserRound, key: 'profile' as const },
           ].map(item => <Button key={item.key} variant="ghost" onClick={() => { onNavigate(item.key); setOpen(false); }} className={`h-auto w-full justify-start rounded-none border-l-4 px-5 py-2.5 text-sm ${active === item.key ? 'border-newsroom-blue bg-newsroom-sidebarHover text-newsroom-sidebarActive' : 'border-transparent text-newsroom-sidebarText hover:bg-newsroom-sidebarHover hover:text-newsroom-sidebarActive'}`}><item.icon className="h-4 w-4" />{item.label}</Button>)}
-          {roles.includes('admin') && <Link to="/admin" className="mt-3 flex items-center gap-3 border-l-4 border-newsroom-danger bg-newsroom-sidebarHover px-6 py-2.5 text-sm font-semibold text-newsroom-sidebarActive"><LayoutDashboard className="h-4 w-4" />Admin panel</Link>}
+          {(roles.includes('admin') || roles.includes('editor')) && <Link to="/admin" className="mt-3 flex items-center gap-3 border-l-4 border-newsroom-danger bg-newsroom-sidebarHover px-6 py-2.5 text-sm font-semibold text-newsroom-sidebarActive"><LayoutDashboard className="h-4 w-4" />Admin panel</Link>}
         </nav>
         <div className="border-t border-newsroom-sidebarLine p-4">
           <div className="mb-3 flex items-center gap-3 px-2">
