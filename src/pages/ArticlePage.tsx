@@ -57,12 +57,18 @@ const ArticlePage = () => {
 
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!commentName.trim() || !commentText.trim() || !article) return;
+    if (!article) return;
+    const name = commentName.trim();
+    const body = commentText.trim();
+    if (name.length < 1 || name.length > 60) { toast.error('Please use a name between 1 and 60 characters'); return; }
+    if (/[<>]/.test(name)) { toast.error('Please use a name without < or > characters'); return; }
+    if (body.length < 2 || body.length > 2000) { toast.error('Comments must be between 2 and 2000 characters'); return; }
+    if (/<\s*(script|iframe|object|embed|style|svg)/i.test(body)) { toast.error('That comment contains content we cannot accept'); return; }
     setSubmitting(true);
     const { error } = await supabase.from('comments').insert({
       article_id: article.id,
-      author_name: commentName.trim(),
-      content: commentText.trim(),
+      author_name: name,
+      content: body,
     });
     if (error) toast.error('Failed to post comment');
     else {

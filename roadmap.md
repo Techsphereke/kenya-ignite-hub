@@ -21,3 +21,12 @@
 - [x] Connect author dashboard, media library, comments, and profile views
 - [x] Add visible admin-panel access for administrators and editors
 - [ ] Verify authenticated author and admin flows after session refresh
+
+## Security hardening
+- [x] Writer profiles made private (public bylines stay "Our Correspondent")
+- [x] Comments limited to published stories, with length and markup checks
+- [x] Database helper functions closed to the public API
+- [x] Uploads confined to each user own folder, 10MB cap
+- [x] Leaked-password protection and current-password requirement enabled
+- [x] Security headers, no directory listing, blocked source files in .htaccess
+- [ ] Enable HTTPS redirect + HSTS in .htaccess once SSL is active on jubachronicles.com

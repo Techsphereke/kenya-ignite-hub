@@ -42,24 +42,20 @@ export interface DbComment {
 
 async function enrichArticles(articles: any[]): Promise<DbArticle[]> {
   if (articles.length === 0) return [];
-  const authorIds = [...new Set(articles.map(a => a.author_id))];
   const categoryIds = [...new Set(articles.map(a => a.category_id).filter(Boolean))];
 
-  const [profilesRes, categoriesRes] = await Promise.all([
-    supabase.from('profiles').select('user_id, display_name, avatar_url').in('user_id', authorIds),
-    categoryIds.length > 0
-      ? supabase.from('categories').select('id, name, slug').in('id', categoryIds)
-      : Promise.resolve({ data: [] }),
-  ]);
+  const categoriesRes = categoryIds.length > 0
+    ? await supabase.from('categories').select('id, name, slug').in('id', categoryIds)
+    : { data: [] };
 
-  const profiles = new Map((profilesRes.data || []).map(p => [p.user_id, p]));
   const catsData = ((categoriesRes as any).data || []) as DbCategory[];
   const cats = new Map(catsData.map(c => [c.id, c]));
 
+  // Bylines are intentionally anonymous — writer identities are never exposed publicly.
   return articles.map(a => ({
     ...a,
-    author_name: profiles.get(a.author_id)?.display_name || 'Unknown',
-    author_avatar: profiles.get(a.author_id)?.avatar_url || null,
+    author_name: 'Our Correspondent',
+    author_avatar: null,
     category_name: cats.get(a.category_id)?.name || undefined,
     category_slug: cats.get(a.category_id)?.slug || undefined,
   }));
