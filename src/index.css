@@ -48,6 +48,23 @@
     --glow-primary: 213 68% 15%;
     --glow-accent: 197 100% 44%;
     --glow-secondary: 197 100% 44%;
+    --newsroom-sidebar: 204 15% 13%;
+    --newsroom-sidebar-hover: 204 13% 18%;
+    --newsroom-sidebar-line: 204 10% 24%;
+    --newsroom-sidebar-text: 210 8% 72%;
+    --newsroom-sidebar-muted: 210 7% 52%;
+    --newsroom-sidebar-active: 0 0% 100%;
+    --newsroom-blue: 207 68% 41%;
+    --newsroom-blue-soft: 207 68% 96%;
+    --newsroom-canvas: 240 3% 94%;
+    --newsroom-surface: 0 0% 100%;
+    --newsroom-line: 240 3% 82%;
+    --newsroom-ink: 204 15% 13%;
+    --newsroom-muted: 210 5% 43%;
+    --newsroom-danger: 359 66% 53%;
+    --newsroom-success: 142 55% 33%;
+    --newsroom-warning: 35 88% 40%;
+    --newsroom-overlay: 204 15% 13%;
   }
   * { @apply border-border; }
   html { scroll-behavior: smooth; }
@@ -99,6 +116,12 @@
   .not-found-stage__number { @apply pointer-events-none absolute left-1/2 top-1/2 font-display text-[13rem] font-black leading-none text-muted md:text-[28rem]; transform: translate(-50%,-55%); }
   .not-found-stage__ticker { @apply absolute bottom-0 left-0 w-full overflow-hidden whitespace-nowrap border-y border-primary bg-primary py-3 text-center text-[9px] font-extrabold tracking-[0.28em] text-primary-foreground md:text-xs; }
   .animate-logo-arrival { animation: logo-arrival .8s cubic-bezier(.2,.8,.2,1) both; }
+  .newsroom-workspace { font-family: 'Manrope Variable', var(--font-body); }
+  .font-newsroom-heading { font-family: 'Sora Variable', var(--font-display); letter-spacing: 0; }
+  .newsroom-panel { @apply border border-newsroom-line bg-newsroom-surface shadow-sm; border-radius: 4px; }
+  .newsroom-field { @apply w-full border border-newsroom-line bg-newsroom-surface px-3 py-2 text-sm text-newsroom-ink outline-none transition-shadow focus:border-newsroom-blue focus:ring-1 focus:ring-newsroom-blue; border-radius: 3px; }
+  .newsroom-table th { @apply bg-newsroom-canvas px-4 py-2.5 text-left text-xs font-semibold text-newsroom-muted; }
+  .newsroom-table td { @apply border-t border-newsroom-line px-4 py-3 align-top text-sm; }
 }
 
 @keyframes ticker-scroll { to { transform: translateX(-50%); } }

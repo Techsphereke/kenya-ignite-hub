@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import AdminLayout from '@/components/AdminLayout';
-import { FileText, Users, MessageSquare, Clock, Eye, Zap, Star } from 'lucide-react';
+import { FileText, Users, MessageSquare, Clock, Eye, Zap, Star, Plus, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const AdminOverview = () => {
   const [stats, setStats] = useState({
@@ -52,26 +54,23 @@ const AdminOverview = () => {
 
   return (
     <AdminLayout>
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div><h1 className="font-newsroom-heading text-2xl font-semibold">Dashboard</h1><p className="mt-1 text-sm text-newsroom-muted">Newsroom activity and publishing overview.</p></div><Button asChild className="bg-newsroom-blue hover:bg-newsroom-blue/90"><Link to="/dashboard"><Plus />Add New Post</Link></Button></div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {cards.map((c, i) => (
           <motion.div key={c.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1, duration: 0.5 }}
-            className={`bg-card border border-border rounded-xl p-5 bg-card ${c.gradient} stat-card ${c.glow} transition-all duration-500`}>
+            className="newsroom-panel p-4 transition-colors hover:border-newsroom-blue">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-body font-medium text-muted-foreground">{c.label}</span>
-              <c.icon className="w-5 h-5 text-foreground/40" />
+              <span className="text-xs font-medium text-newsroom-muted">{c.label}</span>
+              <c.icon className="w-4 h-4 text-newsroom-blue" />
             </div>
-            <span className="text-3xl font-display font-black text-primary">{c.value}</span>
+            <span className="font-newsroom-heading text-2xl font-semibold text-newsroom-ink">{c.value}</span>
           </motion.div>
         ))}
       </div>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
-        className="bg-card border border-border rounded-xl p-6">
-        <h2 className="text-lg font-display font-bold text-foreground mb-2">Welcome to the Admin Panel</h2>
-        <p className="text-sm font-body text-muted-foreground leading-relaxed">
-          Use the sidebar to manage articles, users, and comments. You can approve or reject submitted articles,
-          mark stories as breaking news or featured, manage user roles, and moderate comments.
-        </p>
-      </motion.div>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,1fr)]">
+        <section className="newsroom-panel"><div className="flex items-center justify-between border-b border-newsroom-line px-4 py-3"><h2 className="font-newsroom-heading text-sm font-semibold">At a glance</h2><Link to="/admin/articles" className="text-xs text-newsroom-blue hover:underline">Manage posts</Link></div><div className="grid grid-cols-2 gap-px bg-newsroom-line sm:grid-cols-3"><div className="bg-newsroom-surface p-5"><FileText className="mb-2 h-4 w-4 text-newsroom-blue"/><strong className="block text-xl">{stats.approved}</strong><span className="text-xs text-newsroom-muted">Published stories</span></div><div className="bg-newsroom-surface p-5"><Clock className="mb-2 h-4 w-4 text-newsroom-warning"/><strong className="block text-xl">{stats.pending}</strong><span className="text-xs text-newsroom-muted">Awaiting review</span></div><div className="bg-newsroom-surface p-5"><MessageSquare className="mb-2 h-4 w-4 text-newsroom-blue"/><strong className="block text-xl">{stats.comments}</strong><span className="text-xs text-newsroom-muted">Reader comments</span></div></div></section>
+        <section className="newsroom-panel"><div className="border-b border-newsroom-line px-4 py-3"><h2 className="font-newsroom-heading text-sm font-semibold">Quick actions</h2></div><div className="divide-y divide-newsroom-line"><Link to="/admin/articles" className="flex items-center justify-between p-4 text-sm hover:bg-newsroom-blueSoft">Review pending stories <ArrowRight className="h-4 w-4 text-newsroom-blue"/></Link><Link to="/admin/comments" className="flex items-center justify-between p-4 text-sm hover:bg-newsroom-blueSoft">Moderate comments <ArrowRight className="h-4 w-4 text-newsroom-blue"/></Link><Link to="/admin/users" className="flex items-center justify-between p-4 text-sm hover:bg-newsroom-blueSoft">Manage newsroom roles <ArrowRight className="h-4 w-4 text-newsroom-blue"/></Link></div></section>
+      </div>
     </AdminLayout>
   );
 };

@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { Users as UsersIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Database } from '@/integrations/supabase/types';
+import { Button } from '@/components/ui/button';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type AppRole = Database['public']['Enums']['app_role'];
@@ -14,9 +15,9 @@ interface UserWithRoles extends Profile {
 }
 
 const roleColors: Record<AppRole, string> = {
-  admin: 'bg-primary/20 text-primary shadow-[0_0_8px_hsl(var(--primary)/0.15)]',
-  editor: 'bg-secondary/20 text-secondary shadow-[0_0_8px_hsl(var(--secondary)/0.15)]',
-  author: 'bg-muted/50 text-muted-foreground',
+  admin: 'bg-newsroom-blueSoft text-newsroom-blue',
+  editor: 'bg-newsroom-canvas text-newsroom-success',
+  author: 'bg-newsroom-canvas text-newsroom-muted',
 };
 
 const AdminUsers = () => {
@@ -50,48 +51,49 @@ const AdminUsers = () => {
 
   return (
     <AdminLayout>
+      <div className="mb-5"><h1 className="font-newsroom-heading text-2xl font-semibold">Users</h1><p className="mt-1 text-sm text-newsroom-muted">Manage newsroom access and publishing roles.</p></div>
       {loading ? (
-        <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-xl animate-spin" /></div>
+        <div className="flex justify-center py-16"><div className="w-8 h-8 border-2 border-newsroom-blue border-t-transparent rounded-full animate-spin" /></div>
       ) : users.length === 0 ? (
-        <div className="text-center py-16 bg-card border border-border rounded-xl">
-          <UsersIcon className="w-10 h-10 mx-auto text-muted-foreground/40 mb-3" />
-          <p className="text-muted-foreground font-body">No users found</p>
+        <div className="newsroom-panel text-center py-16">
+          <UsersIcon className="w-10 h-10 mx-auto text-newsroom-muted mb-3" />
+          <p className="text-newsroom-muted">No users found</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="newsroom-panel overflow-hidden divide-y divide-newsroom-line">
           {users.map((user, i) => (
             <motion.div key={user.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover:border-accent transition-all duration-300">
+              className="bg-newsroom-surface p-4 flex flex-col items-start gap-4 hover:bg-newsroom-blueSoft transition-colors sm:flex-row sm:items-center">
               {user.avatar_url ? (
-                <img src={user.avatar_url} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0 ring-2 ring-border/30" />
+                <img src={user.avatar_url} alt="" className="w-10 h-10 rounded-sm object-cover flex-shrink-0" />
               ) : (
-                <div className="w-10 h-10 rounded-xl bg-card from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-body font-bold text-foreground">{(user.display_name || '?')[0].toUpperCase()}</span>
+                <div className="w-10 h-10 rounded-sm bg-newsroom-blueSoft flex items-center justify-center flex-shrink-0">
+                  <span className="text-sm font-bold text-newsroom-blue">{(user.display_name || '?')[0].toUpperCase()}</span>
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-body font-semibold text-foreground">{user.display_name || 'Unnamed'}</h3>
+                <h3 className="text-sm font-semibold text-newsroom-ink">{user.display_name || 'Unnamed'}</h3>
                 <div className="flex flex-wrap gap-1.5 mt-1">
                   {user.roles.map(role => (
-                    <span key={role} className={`px-2 py-0.5 rounded-xl text-xs font-body font-medium ${roleColors[role]}`}>
+                    <span key={role} className={`px-2 py-0.5 rounded-sm text-xs font-medium ${roleColors[role]}`}>
                       {role}
                     </span>
                   ))}
                 </div>
-                <span className="text-xs text-muted-foreground font-body">Joined {new Date(user.created_at).toLocaleDateString()}</span>
+                <span className="text-xs text-newsroom-muted">Joined {new Date(user.created_at).toLocaleDateString()}</span>
               </div>
 
               <div className="flex gap-1 flex-shrink-0">
                 {(['admin', 'editor', 'author'] as AppRole[]).map(role => {
                   const has = user.roles.includes(role);
                   return (
-                    <button key={role} onClick={() => toggleRole(user.user_id, role, has)}
+                    <Button key={role} variant="outline" size="sm" onClick={() => toggleRole(user.user_id, role, has)}
                       title={`${has ? 'Remove' : 'Add'} ${role} role`}
-                      className={`px-2.5 py-1 rounded-xl text-xs font-body font-medium transition-all duration-300 ${
-                        has ? roleColors[role] : 'bg-muted/30 text-muted-foreground hover:bg-muted/50'
+                      className={`px-2.5 py-1 rounded-sm border border-newsroom-line text-xs font-medium transition-colors ${
+                        has ? roleColors[role] : 'bg-newsroom-surface text-newsroom-muted hover:bg-newsroom-canvas'
                       }`}>
                       {role}
-                    </button>
+                    </Button>
                   );
                 })}
               </div>
