@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { LayoutDashboard, FileText, Users, MessageSquare, ArrowLeft, LogOut, Menu, X, PlusSquare, Image, ExternalLink } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 
 const nav = [
@@ -47,7 +47,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       </div>
     </aside>
 
-    <AnimatePresence>{open && <motion.button aria-label="Close menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-30 bg-newsroom-overlay md:hidden" onClick={() => setOpen(false)} />}</AnimatePresence>
+    {open && <button aria-label="Close menu" className="fixed inset-0 z-30 bg-newsroom-overlay md:hidden" onClick={() => setOpen(false)} />}
 
     <div className="flex-1 md:ml-60">
       <header className="sticky top-0 z-20 bg-newsroom-surface border-b border-newsroom-line px-3 md:px-6 h-12 flex items-center justify-between">
