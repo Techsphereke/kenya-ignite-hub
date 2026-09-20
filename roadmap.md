@@ -1,4 +1,4 @@
-# Kenya Ignite makeover roadmap
+# Juba Chronicle makeover roadmap
 - [x] Lock editorial palette, type, and layout direction
 - [x] Rebuild shared visual tokens, masthead, ticker, footer, and mobile navigation
 - [x] Recompose homepage and article card system
@@ -8,3 +8,8 @@
 
 ## Pending (needs your action)
 - [ ] Upload public/.htaccess, public/og.php and public/og-image.png to the jubachronicles.com hosting, then re-run Facebook Sharing Debugger + Twitter Card Validator (use "Scrape Again").
+
+## Article share previews
+- [x] Match WhatsApp-style previews with story image, headline, excerpt, and Juba Chronicle domain
+- [x] Keep contributor identity private as “Our Correspondent” in article metadata
+- [x] Support article URLs with or without a trailing slash

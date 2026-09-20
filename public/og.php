@@ -43,6 +43,14 @@ function share_image(?string $url): string {
   return $url;
 }
 
+function image_type(string $url): string {
+  $path = strtolower((string) (parse_url($url, PHP_URL_PATH) ?? ''));
+  if (str_ends_with($path, '.png')) return 'image/png';
+  if (str_ends_with($path, '.webp')) return 'image/webp';
+  if (str_ends_with($path, '.gif')) return 'image/gif';
+  return 'image/jpeg';
+}
+
 $slug = isset($_GET['slug']) ? preg_replace('/[^a-zA-Z0-9\-_]/', '', $_GET['slug']) : '';
 $article = null;
 
@@ -76,6 +84,7 @@ if ($article) {
   $image = FALLBACK_IMAGE;
   $articleUrl = $slug !== '' ? $articleUrl : SITE_URL;
 }
+$imageType = image_type($image);
 
 $jsonLd = json_encode([
   '@context' => 'https://schema.org',
@@ -86,7 +95,7 @@ $jsonLd = json_encode([
   'url'      => $articleUrl,
   'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $articleUrl],
   'datePublished' => $article['published_at'] ?? null,
-  'author'   => ['@type' => 'Person', 'name' => SITE_NAME],
+  'author'   => ['@type' => 'Person', 'name' => 'Our Correspondent'],
   'publisher' => [
     '@type' => 'Organization',
     'name'  => SITE_NAME,
@@ -115,11 +124,15 @@ header('X-Robots-Tag: all');
 <meta property="og:url" content="<?= e($articleUrl) ?>" />
 <meta property="og:image" content="<?= e($image) ?>" />
 <meta property="og:image:secure_url" content="<?= e($image) ?>" />
-<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:type" content="<?= e($imageType) ?>" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="<?= e($title) ?>" />
-<meta property="og:locale" content="en_KE" />
+<meta property="og:locale" content="en_SS" />
+<?php if ($article && !empty($article['published_at'])): ?>
+<meta property="article:published_time" content="<?= e($article['published_at']) ?>" />
+<meta property="article:author" content="Our Correspondent" />
+<?php endif; ?>
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@JubaChronicle" />

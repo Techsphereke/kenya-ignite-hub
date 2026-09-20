@@ -90,16 +90,6 @@ Deno.serve(async (req) => {
     });
   }
 
-  let authorName = SITE_NAME;
-  if (article.author_id) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("display_name")
-      .eq("user_id", article.author_id)
-      .single();
-    if (profile?.display_name) authorName = profile.display_name;
-  }
-
   const articleUrl = `${SITE_URL}/article/${article.slug}`;
   const normalizedExcerpt = truncate(
     stripHtml(article.excerpt) || stripHtml(article.content) || FALLBACK_DESCRIPTION,
@@ -119,7 +109,7 @@ Deno.serve(async (req) => {
     image: [image],
     datePublished: publishedAt,
     dateModified: publishedAt,
-    author: { "@type": "Person", name: authorName },
+    author: { "@type": "Person", name: "Our Correspondent" },
     publisher: {
       "@type": "Organization",
       name: SITE_NAME,
@@ -144,17 +134,22 @@ Deno.serve(async (req) => {
   <meta property="og:description" content="${description}" />
   <meta property="og:image" content="${image}" />
   <meta property="og:image:secure_url" content="${image}" />
+  <meta property="og:image:type" content="${image.endsWith(".png") ? "image/png" : "image/jpeg"}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="${title}" />
   <meta property="og:url" content="${articleUrl}" />
   <meta property="og:site_name" content="${SITE_NAME}" />
+  <meta property="og:locale" content="en_SS" />
   <meta property="article:published_time" content="${publishedAt}" />
+  <meta property="article:author" content="Our Correspondent" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${title}" />
   <meta name="twitter:description" content="${description}" />
   <meta name="twitter:image" content="${image}" />
+  <meta name="twitter:image:alt" content="${title}" />
   <meta name="twitter:site" content="@JubaChronicle" />
 
   <!-- JSON-LD -->
